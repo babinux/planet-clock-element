@@ -6,22 +6,24 @@ import {
 } from 'lit-element';
 
 
-// import style from "./style.css";
+import style from "./style.css";
+
+console.log(style);
 
 
-const sheet = new CSSStyleSheet();
-sheet.replace('@import url("/src/style.css")')
-  .then(sheet => {
-    console.log('Styles loaded successfully');
-  })
-  .catch(err => {
-    console.error('Failed to load:', err);
-  });
-  
+if (false) {
+  const sheet = new CSSStyleSheet();
+  sheet.replace('@import url("/src/style.css")')
+    .then(sheet => {
+      console.log('Styles loaded successfully');
+    })
+    .catch(err => {
+      console.error('Failed to load:', err);
+    });
+}
 
 export class PlanetClockElement extends LitElement {
 
-// static styles = style;
 
   static get properties() {
     return {
@@ -52,7 +54,13 @@ export class PlanetClockElement extends LitElement {
     // Initialize properties
     this.loaded = false;
 
-    this.shadowRoot.adoptedStyleSheets = [sheet];
+    if (false) {
+      this.shadowRoot.adoptedStyleSheets = [sheet];
+    }else{
+        // this.styles = style;
+
+    }
+
 
     // this.date = new Date();
     this.date = new Date('Thu Aug 22 2019 20:36:10 GMT-0800 (Pacific Standard Time)');
@@ -75,9 +83,11 @@ export class PlanetClockElement extends LitElement {
     //   css `${unsafeCSS(request.responseText)}`
     // ];
 
-    // return [
-    //   css `${style}`
-    // ];
+    return [
+      // css `${style}`
+   css `${unsafeCSS(style)}`
+
+    ];
   }
 
   togglePlanetAnimation(event) {

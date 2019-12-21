@@ -24,6 +24,22 @@
     "start:build": "cd dist && es-dev-server --open",
     "build": "rimraf dist && rollup -c rollup.config.js"
   },
+  "babel": {
+    "presets": [
+      "@babel/preset-flow",
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": 8
+          }
+        }
+      ]
+    ],
+    "plugins": [
+      ["@babel/plugin-proposal-class-properties"]
+    ]
+  },
   "dependencies": {
     "lit-element": "^2.0.1",
     "lit-html": "^1.0.0",
