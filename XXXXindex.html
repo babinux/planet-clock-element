@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+	<!-- Register service worker if supported. -->
+	<!--
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js');
+    }
+  </script>
+  -->
+
+	<!-- Load polyfills -->
+	<script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js" defer>
+	</script>
+
+	<!-- Load components via WebComponents.waitFor -->
+	<script type="module">
+		window.WebComponents = window.WebComponents || {
+			waitFor(cb) { addEventListener('WebComponentsReady', cb) }
+		}
+		WebComponents.waitFor(async () => {
+			import("./src/planetClockElement.js");
+		});
+	</script>
+
+	<meta name="description" content="Planet Clock">
+	<meta name="theme-color" content="#ffffff">
+	<title>Planet Clock</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="manifest" href="./manifest.json">
+	<link rel="shortcut icon" href="/manifest/favicon.ico">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta charset="UTF-8">
+</head>
+
+<body>
+	<planet-clock-element color="pink">
+		<noscript>
+			Could not render the custom element. Check that JavaScript is enabled.
+		</noscript>
+	</planet-clock-element>
+</body>

@@ -1,0 +1,55 @@
+import { Story, Preview, Meta, Props, html } from '@open-wc/demoing-storybook';
+
+import '../planet-clock-element.js';
+
+<Meta 
+  title="PlanetClockElement"
+  parameters={{
+    component: "planet-clock-element",
+    options: { selectedPanel: "storybookjs/knobs/panel" }
+  }}
+/>
+
+# PlanetClockElement
+
+A component for...
+
+## Features:
+
+- a
+- b
+- ...
+
+## How to use
+
+### Installation
+
+```bash
+yarn add planet-clock-element
+```
+
+```js
+import 'planet-clock-element/planet-clock-element.js';
+```
+
+<Preview withToolbar>
+  <Story name="Simple">
+    {html`
+      <planet-clock-element></planet-clock-element>
+    `}
+  </Story>
+</Preview>
+
+## API
+
+<Props of="planet-clock-element" />
+
+## Variations
+
+###### Custom Title
+
+<Story name="Custom Title">
+  {html`
+    <planet-clock-element .title=${'Hello World'}></planet-clock-element>
+  `}
+</Story>

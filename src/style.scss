@@ -1,0 +1,275 @@
+#myastro {
+	--orbit-color: rgb(0, 0, 0);
+	width: 100%;
+	height: 100%;
+	fill: none;
+	stroke: var(--orbit-color, green);
+	stroke-width: 1;
+	stroke-linecap: round;
+	transform: rotate(-90deg);
+}
+
+// ===============================================
+// ===============================================
+
+:root {
+	background: #dedede;
+}
+
+// ===============================================
+// ===============================================
+
+$days-in-year: var(--days-this-year);
+$base-size: 100;
+$center: calc(#{$base-size}/ 2);
+$centerPX: calc(#{$center} * 1px);
+$orbit-color: var(--orbit-color, red);
+$plannets-scale: 1.03;
+
+line {
+	stroke-width: 0.2;
+}
+
+.planet {
+	stroke-width: 0.4;
+	stroke: $orbit-color;
+	animation-play-state: paused !important;
+	cy: $centerPX;
+	transform-origin: $centerPX $centerPX;
+
+	&.play {
+		animation-play-state: running !important;
+	}
+}
+
+.orbit {
+	cx: $centerPX;
+	cy: $centerPX;
+	stroke-width: 0.5;
+	fill: transparent;
+	stroke: $orbit-color;
+	transform-origin: $centerPX $centerPX;
+}
+
+@mixin orbit-gen(
+	$planet-name,
+	$planet-color,
+	$planet-size,
+	$orbit,
+	$period,
+	$start-days
+) {
+	$radius: calc((#{$plannets-scale} * #{$orbit} * #{$center}) - #{$center});
+	r: calc(#{$radius} * 1px);
+}
+
+@mixin planet-gen(
+	$planet-name,
+	$planet-color,
+	$planet-size,
+	$orbit,
+	$period,
+	$start-days
+) {
+	@if $planet-name==sun {
+		cx: #{$centerPX};
+	} @else {
+		cx: calc(#{$plannets-scale} * #{$orbit} * #{$centerPX});
+	}
+
+	r: calc(#{$planet-size} * #{$plannets-scale} * 1px);
+
+	transform: rotate(calc(#{$start-days} * 1deg));
+	animation: none;
+	fill: $planet-color;
+
+	&.play {
+		// animation: #{$planet-name}rotate $speed steps(365) infinite; //  Inaccurate Rotation
+		@if $period !=0 {
+			// ==== THIS IS WHERE THE ERROR COMES FROMalign-content
+			// ==== I THINK IT's BECAUSE 1deg is too big of a number to be accurate
+			animation: #{$planet-name}Rotate
+				calc((360 / ((360 / #{$period}) * 365)) * 60 * 1s)
+				steps(365)
+				infinite;
+		}
+
+		@keyframes #{$planet-name}Rotate {
+			from {
+				transform: rotate(calc(#{$start-days} * 1deg));
+			}
+
+			to {
+				transform: rotate(calc(#{$start-days} * 1deg + 360deg));
+			}
+		}
+	}
+}
+
+$sun: (
+	planet-name: 'sun',
+	planet-color: yellow,
+	planet-size: 1,
+	orbit: 1,
+	period: 0,
+	start-days: 0,
+);
+
+$mercury: (
+	planet-name: 'mercury',
+	planet-color: gray,
+	planet-size: 0.8,
+	orbit: 1.04,
+	period: 88,
+	start-days: var(--start-mercury),
+);
+
+$venus: (
+	planet-name: 'venus',
+	planet-color: #ff73d7,
+	planet-size: 1.6,
+	orbit: 1.111,
+	period: 225,
+	start-days: var(--start-venus),
+);
+
+$earth: (
+	planet-name: 'earth',
+	planet-color: #5eb1ff,
+	planet-size: 2,
+	orbit: 1.2,
+	period: 365,
+	start-days: var(--start-earth),
+);
+
+$mars: (
+	planet-name: 'mars',
+	planet-color: #ff5527,
+	planet-size: 1.4,
+	orbit: 1.29,
+	period: 687,
+	start-days: var(--start-mars),
+);
+
+$asteroid-belt: (
+	planet-name: 'asteroid-belt',
+	planet-color: #ff4c00,
+	planet-size: 1.3,
+	orbit: 1.35,
+	period: 687,
+	start-days: 0,
+);
+
+$jupiter: (
+	planet-name: 'jupiter',
+	planet-color: #f8840b,
+	planet-size: 3,
+	orbit: 1.44,
+	period: 4331,
+	start-days: var(--start-jupiter),
+);
+
+$saturn: (
+	planet-name: 'saturn',
+	planet-color: #f8ca14,
+	planet-size: 2.5,
+	orbit: 1.57,
+	period: 10747,
+	start-days: var(--start-saturn),
+);
+
+$uranus: (
+	planet-name: 'uranus',
+	planet-color: #3adfff,
+	planet-size: 1.8,
+	orbit: 1.68,
+	period: 30589,
+	start-days: var(--start-uranus),
+);
+
+$neptune: (
+	planet-name: 'neptune',
+	planet-color: #9755ff,
+	planet-size: 1.6,
+	orbit: 1.78,
+	period: 59800,
+	start-days: var(--start-neptune),
+);
+
+#myastro {
+	.sun {
+		@include planet-gen($sun...);
+		transform: none;
+		stroke: $orbit-color;
+		stroke-width: 0.4;
+		cy: #{$centerPX};
+	}
+
+	.mercury {
+		@include planet-gen($mercury...);
+	}
+
+	.mercury-orbit {
+		@include orbit-gen($mercury...);
+	}
+
+	.venus {
+		@include planet-gen($venus...);
+	}
+
+	.venus-orbit {
+		@include orbit-gen($venus...);
+	}
+
+	.earth {
+		@include planet-gen($earth...);
+	}
+
+	.earth-orbit {
+		@include orbit-gen($earth...);
+	}
+
+	.mars {
+		@include planet-gen($mars...);
+	}
+
+	.mars-orbit {
+		@include orbit-gen($mars...);
+	}
+
+	.asteroid-belt-orbit {
+		@include orbit-gen($asteroid-belt...);
+	}
+
+	.jupiter {
+		@include planet-gen($jupiter...);
+	}
+
+	.jupiter-orbit {
+		@include orbit-gen($jupiter...);
+	}
+
+	.saturn {
+		@include planet-gen($saturn...);
+	}
+
+	.saturn-orbit {
+		@include orbit-gen($saturn...);
+	}
+
+	.uranus {
+		@include planet-gen($uranus...);
+	}
+
+	.uranus-orbit {
+		@include orbit-gen($uranus...);
+	}
+
+	.neptune {
+		@include planet-gen($neptune...);
+	}
+
+	.neptune-orbit {
+		@include orbit-gen($neptune...);
+	}
+}
