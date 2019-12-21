@@ -6,7 +6,7 @@ import {
 } from 'lit-element';
 
 
-import style from "./style.css";
+// import style from "./style.css";
 
 
 const sheet = new CSSStyleSheet();
