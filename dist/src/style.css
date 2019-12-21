@@ -1,0 +1,231 @@
+#myastro {
+  --orbit-color: rgb(0, 0, 0);
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--orbit-color, green);
+  stroke-width: 1;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+}
+
+:root {
+  background: #dedede;
+}
+
+line {
+  stroke-width: 0.2;
+}
+
+.planet {
+  stroke-width: 0.4;
+  stroke: var(--orbit-color, red);
+  animation-play-state: paused !important;
+  cy: calc(calc(100/ 2) * 1px);
+  transform-origin: calc(calc(100/ 2) * 1px) calc(calc(100/ 2) * 1px);
+}
+.planet.play {
+  animation-play-state: running !important;
+}
+
+.orbit {
+  cx: calc(calc(100/ 2) * 1px);
+  cy: calc(calc(100/ 2) * 1px);
+  stroke-width: 0.5;
+  fill: transparent;
+  stroke: var(--orbit-color, red);
+  transform-origin: calc(calc(100/ 2) * 1px) calc(calc(100/ 2) * 1px);
+}
+
+#myastro .sun {
+  cx: calc(calc(100/ 2) * 1px);
+  r: calc(1 * 1.03 * 1px);
+  transform: rotate(calc(0 * 1deg));
+  animation: none;
+  fill: yellow;
+  transform: none;
+  stroke: var(--orbit-color, red);
+  stroke-width: 0.4;
+  cy: calc(calc(100/ 2) * 1px);
+}
+@keyframes sunRotate {
+  from {
+    transform: rotate(calc(0 * 1deg));
+  }
+  to {
+    transform: rotate(calc(0 * 1deg + 360deg));
+  }
+}
+#myastro .mercury {
+  cx: calc(1.03 * 1.04 * calc(calc(100/ 2) * 1px));
+  r: calc(0.8 * 1.03 * 1px);
+  transform: rotate(calc(var(--start-mercury) * 1deg));
+  animation: none;
+  fill: gray;
+}
+#myastro .mercury.play {
+  animation: mercuryRotate calc((360 / ((360 / 88) * 365)) * 60 * 1s) steps(365) infinite;
+}
+@keyframes mercuryRotate {
+  from {
+    transform: rotate(calc(var(--start-mercury) * 1deg));
+  }
+  to {
+    transform: rotate(calc(var(--start-mercury) * 1deg + 360deg));
+  }
+}
+#myastro .mercury-orbit {
+  r: calc(calc((1.03 * 1.04 * calc(100/ 2)) - calc(100/ 2)) * 1px);
+}
+#myastro .venus {
+  cx: calc(1.03 * 1.111 * calc(calc(100/ 2) * 1px));
+  r: calc(1.6 * 1.03 * 1px);
+  transform: rotate(calc(var(--start-venus) * 1deg));
+  animation: none;
+  fill: #ff73d7;
+}
+#myastro .venus.play {
+  animation: venusRotate calc((360 / ((360 / 225) * 365)) * 60 * 1s) steps(365) infinite;
+}
+@keyframes venusRotate {
+  from {
+    transform: rotate(calc(var(--start-venus) * 1deg));
+  }
+  to {
+    transform: rotate(calc(var(--start-venus) * 1deg + 360deg));
+  }
+}
+#myastro .venus-orbit {
+  r: calc(calc((1.03 * 1.111 * calc(100/ 2)) - calc(100/ 2)) * 1px);
+}
+#myastro .earth {
+  cx: calc(1.03 * 1.2 * calc(calc(100/ 2) * 1px));
+  r: calc(2 * 1.03 * 1px);
+  transform: rotate(calc(var(--start-earth) * 1deg));
+  animation: none;
+  fill: #5eb1ff;
+}
+#myastro .earth.play {
+  animation: earthRotate calc((360 / ((360 / 365) * 365)) * 60 * 1s) steps(365) infinite;
+}
+@keyframes earthRotate {
+  from {
+    transform: rotate(calc(var(--start-earth) * 1deg));
+  }
+  to {
+    transform: rotate(calc(var(--start-earth) * 1deg + 360deg));
+  }
+}
+#myastro .earth-orbit {
+  r: calc(calc((1.03 * 1.2 * calc(100/ 2)) - calc(100/ 2)) * 1px);
+}
+#myastro .mars {
+  cx: calc(1.03 * 1.29 * calc(calc(100/ 2) * 1px));
+  r: calc(1.4 * 1.03 * 1px);
+  transform: rotate(calc(var(--start-mars) * 1deg));
+  animation: none;
+  fill: #ff5527;
+}
+#myastro .mars.play {
+  animation: marsRotate calc((360 / ((360 / 687) * 365)) * 60 * 1s) steps(365) infinite;
+}
+@keyframes marsRotate {
+  from {
+    transform: rotate(calc(var(--start-mars) * 1deg));
+  }
+  to {
+    transform: rotate(calc(var(--start-mars) * 1deg + 360deg));
+  }
+}
+#myastro .mars-orbit {
+  r: calc(calc((1.03 * 1.29 * calc(100/ 2)) - calc(100/ 2)) * 1px);
+}
+#myastro .asteroid-belt-orbit {
+  r: calc(calc((1.03 * 1.35 * calc(100/ 2)) - calc(100/ 2)) * 1px);
+}
+#myastro .jupiter {
+  cx: calc(1.03 * 1.44 * calc(calc(100/ 2) * 1px));
+  r: calc(3 * 1.03 * 1px);
+  transform: rotate(calc(var(--start-jupiter) * 1deg));
+  animation: none;
+  fill: #f8840b;
+}
+#myastro .jupiter.play {
+  animation: jupiterRotate calc((360 / ((360 / 4331) * 365)) * 60 * 1s) steps(365) infinite;
+}
+@keyframes jupiterRotate {
+  from {
+    transform: rotate(calc(var(--start-jupiter) * 1deg));
+  }
+  to {
+    transform: rotate(calc(var(--start-jupiter) * 1deg + 360deg));
+  }
+}
+#myastro .jupiter-orbit {
+  r: calc(calc((1.03 * 1.44 * calc(100/ 2)) - calc(100/ 2)) * 1px);
+}
+#myastro .saturn {
+  cx: calc(1.03 * 1.57 * calc(calc(100/ 2) * 1px));
+  r: calc(2.5 * 1.03 * 1px);
+  transform: rotate(calc(var(--start-saturn) * 1deg));
+  animation: none;
+  fill: #f8ca14;
+}
+#myastro .saturn.play {
+  animation: saturnRotate calc((360 / ((360 / 10747) * 365)) * 60 * 1s) steps(365) infinite;
+}
+@keyframes saturnRotate {
+  from {
+    transform: rotate(calc(var(--start-saturn) * 1deg));
+  }
+  to {
+    transform: rotate(calc(var(--start-saturn) * 1deg + 360deg));
+  }
+}
+#myastro .saturn-orbit {
+  r: calc(calc((1.03 * 1.57 * calc(100/ 2)) - calc(100/ 2)) * 1px);
+}
+#myastro .uranus {
+  cx: calc(1.03 * 1.68 * calc(calc(100/ 2) * 1px));
+  r: calc(1.8 * 1.03 * 1px);
+  transform: rotate(calc(var(--start-uranus) * 1deg));
+  animation: none;
+  fill: #3adfff;
+}
+#myastro .uranus.play {
+  animation: uranusRotate calc((360 / ((360 / 30589) * 365)) * 60 * 1s) steps(365) infinite;
+}
+@keyframes uranusRotate {
+  from {
+    transform: rotate(calc(var(--start-uranus) * 1deg));
+  }
+  to {
+    transform: rotate(calc(var(--start-uranus) * 1deg + 360deg));
+  }
+}
+#myastro .uranus-orbit {
+  r: calc(calc((1.03 * 1.68 * calc(100/ 2)) - calc(100/ 2)) * 1px);
+}
+#myastro .neptune {
+  cx: calc(1.03 * 1.78 * calc(calc(100/ 2) * 1px));
+  r: calc(1.6 * 1.03 * 1px);
+  transform: rotate(calc(var(--start-neptune) * 1deg));
+  animation: none;
+  fill: #9755ff;
+}
+#myastro .neptune.play {
+  animation: neptuneRotate calc((360 / ((360 / 59800) * 365)) * 60 * 1s) steps(365) infinite;
+}
+@keyframes neptuneRotate {
+  from {
+    transform: rotate(calc(var(--start-neptune) * 1deg));
+  }
+  to {
+    transform: rotate(calc(var(--start-neptune) * 1deg + 360deg));
+  }
+}
+#myastro .neptune-orbit {
+  r: calc(calc((1.03 * 1.78 * calc(100/ 2)) - calc(100/ 2)) * 1px);
+}
+
+/*# sourceMappingURL=style.css.map */
