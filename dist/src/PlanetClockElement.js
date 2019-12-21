@@ -6,11 +6,10 @@ import {
 } from 'lit-element';
 
 
-import style from "./style.css";
+// import style from "./style.css";
 
 
 const sheet = new CSSStyleSheet();
-
 sheet.replace('@import url("../src/style.css")')
   .then(sheet => {
     console.log('Styles loaded successfully');
@@ -22,8 +21,6 @@ sheet.replace('@import url("../src/style.css")')
 
 
 export class PlanetClockElement extends LitElement {
-
-
   static get properties() {
     return {
       date: {
@@ -41,27 +38,17 @@ export class PlanetClockElement extends LitElement {
     };
   }
 
-
-  /**  
-   * In the element constructor, assign default property values.
-   */
-
   constructor() {
-    // Must call superconstructor first.
     super();
 
-    // Initialize properties
     this.loaded = false;
 
     if (typeof style === 'undefined') {
       this.shadowRoot.adoptedStyleSheets = [sheet];
     }
 
-
-
     // this.date = new Date();
     this.date = new Date('Thu Aug 22 2019 20:36:10 GMT-0800 (Pacific Standard Time)');
-    // console.log(this.date);
 
     // compute elapsed time in centuries, which is what JPL tables use
     const janFirst2000 = new Date(2000, 0, 1, 12, 0, 0);
@@ -72,9 +59,8 @@ export class PlanetClockElement extends LitElement {
   }
 
   static get styles() {
-    
-    if (typeof style == 'undefined') {
-    } else {
+
+    if (typeof style !== 'undefined') {
       return [
         css `${unsafeCSS(style)}`
       ];
@@ -147,25 +133,17 @@ export class PlanetClockElement extends LitElement {
     `;
   }
 
-  /**
-   * Implement firstUpdated to perform one-time work on first update:
-   * - Call a method to load the lazy element if necessary
-   */
   firstUpdated(changedProperties) {
     console.log(changedProperties);
-    // console.log(this.shadowRoot.querySelector('#myastro'));
 
     this.myastro = this.shadowRoot.querySelector('#myastro');
     this.planets = this.shadowRoot.querySelectorAll('.planet');
     this.orbits = this.shadowRoot.querySelectorAll('.orbit');
     this.sun = this.shadowRoot.querySelector('#sun');
-
     this.loaded = true;
 
     this.checkBrowser();
     this.updatePlanetMap();
-
-
   }
 
   computeReferenceAngles() {
@@ -195,14 +173,16 @@ export class PlanetClockElement extends LitElement {
     this.myastro.style.setProperty("--days-this-year", parseInt(this.daysThisYear(this.date.getFullYear())));
     this.setPlanetsOrbits();
   }
-
-  daysThisYear(year) {
-    return this.isLeapYear(year) ? 366 : 365;
+  
+  isLeapYear(yearDate) {
+    return yearDate % 400 === 0 || (yearDate % 100 !== 0 && yearDate % 4 === 0);
   }
 
-  isLeapYear(year) {
-    return year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0);
+  daysThisYear(isLeapYearBool) {
+    return this.isLeapYear(isLeapYearBool) ? 366 : 365;
   }
+
+
 
 
   JPL(T, pindex) {
@@ -211,14 +191,14 @@ export class PlanetClockElement extends LitElement {
     //
     // pindex: 0=mercury, 1=venus, 2=earth, etc.
     // orbit parameters from tables
-    var a = this.a_0[pindex] + T * this.a_dot[pindex];
-    var e = this.e_0[pindex] + T * this.e_dot[pindex];
-    var I = this.I_0[pindex] + T * this.I_dot[pindex];
-    var L = this.L_0[pindex] + T * this.L_dot[pindex];
-    var wbar = this.wbar_0[pindex] + T * this.wbar_dot[pindex];
-    var omega = this.omega_0[pindex] + T * this.omega_dot[pindex];
+    const a = this.a_0[pindex] + T * this.a_dot[pindex];
+    const e = this.e_0[pindex] + T * this.e_dot[pindex];
+    const I = this.I_0[pindex] + T * this.I_dot[pindex];
+    const L = this.L_0[pindex] + T * this.L_dot[pindex];
+    const wbar = this.wbar_0[pindex] + T * this.wbar_dot[pindex];
+    const omega = this.omega_0[pindex] + T * this.omega_dot[pindex];
     // argument of perhelion
-    var w = wbar - omega;
+    const w = wbar - omega;
     // mean anomaly
     // FINISH ME: add correction terms for outer planets
     // UPDATE: corrections only needed for 3000/3000 AD/BC tables
