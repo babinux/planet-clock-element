@@ -26,8 +26,24 @@ self.addEventListener('message', (event) => {
  */
 self.__precacheManifest = [
   {
+    "url": "index.html",
+    "revision": "88c401e738cb13e0b8acd2268adcb047"
+  },
+  {
     "url": "index.js",
-    "revision": "ac5929024be904f1929be7c4f9b892f1"
+    "revision": "368215ead6a76f6a23b80e0dacbf527e"
+  },
+  {
+    "url": "polyfills/custom-elements-es5-adapter.84b300ee818dce8b351c7cc7c100bcf7.js",
+    "revision": "cff507bc95ad1d6bf1a415cc9c8852b0"
+  },
+  {
+    "url": "polyfills/dynamic-import.b745cfc9384367cc18b42bbef2bbdcd9.js",
+    "revision": "ed55766050be285197b8f511eacedb62"
+  },
+  {
+    "url": "polyfills/webcomponents.dae9f79d9d6992b6582e204c3dd953d3.js",
+    "revision": "fe4a22f36087db029cd3f476a1935410"
   },
   {
     "url": "src/PlanetClockElement.js",

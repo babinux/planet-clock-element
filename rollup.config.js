@@ -15,7 +15,7 @@ import copy from 'rollup-plugin-copy'
 
 
 const configs = createDefaultConfig({
-  input: './index.js',
+  input: './demo/index.html',
 
 });
 
@@ -26,7 +26,7 @@ export default {
   output: {
     ...configs.output,
     sourcemap: true,
-    entryFileNames: '[name].js',
+    entryFileNames: 'index.js',
     chunkFileNames: '[name].js',
   },
   plugins: [
