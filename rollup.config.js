@@ -3,14 +3,14 @@ import {
 } from '@open-wc/building-rollup';
 import copy from 'rollup-plugin-copy'
 
-// import postcss from 'rollup-plugin-postcss';
+import postcss from 'rollup-plugin-postcss';
 
 
 // // PostCSS plugins
-// import simplevars from 'postcss-simple-vars';
-// import nested from 'postcss-nested';
-// import cssnext from 'postcss-cssnext';
-// import cssnano from 'cssnano';
+import simplevars from 'postcss-simple-vars';
+import nested from 'postcss-nested';
+import cssnext from 'postcss-cssnext';
+import cssnano from 'cssnano';
 
 
 
@@ -42,6 +42,17 @@ export default {
         // parents makes sure to preserve the original folder structure
         parents: true,
       },
+    }),
+    postcss({
+      plugins: [
+        simplevars(),
+        nested(),
+        cssnext({
+          warnForDuplicates: false,
+        }),
+        cssnano(),
+      ],
+      extensions: ['.css'],
     }),
   ]
 };
