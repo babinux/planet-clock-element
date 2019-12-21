@@ -31,7 +31,7 @@ self.__precacheManifest = [
   },
   {
     "url": "index.js",
-    "revision": "368215ead6a76f6a23b80e0dacbf527e"
+    "revision": "a12c91413a6529b4eb6cfb9250af5e28"
   },
   {
     "url": "polyfills/custom-elements-es5-adapter.84b300ee818dce8b351c7cc7c100bcf7.js",
@@ -47,7 +47,7 @@ self.__precacheManifest = [
   },
   {
     "url": "src/PlanetClockElement.js",
-    "revision": "52a647e20c74c6e2ea96e53d6091355c"
+    "revision": "fb2b1763ef0f65c6299c83d2d3801e8e"
   },
   {
     "url": "src/style.css",
