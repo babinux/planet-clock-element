@@ -6,7 +6,7 @@ import {
 } from 'lit-element';
 
 
-// import style from "./style.css";
+import style from "./style.css";
 
 
 const sheet = new CSSStyleSheet();
@@ -191,14 +191,14 @@ export class PlanetClockElement extends LitElement {
     //
     // pindex: 0=mercury, 1=venus, 2=earth, etc.
     // orbit parameters from tables
-    const a = this.a_0[pindex] + T * this.a_dot[pindex];
-    const e = this.e_0[pindex] + T * this.e_dot[pindex];
-    const I = this.I_0[pindex] + T * this.I_dot[pindex];
-    const L = this.L_0[pindex] + T * this.L_dot[pindex];
-    const wbar = this.wbar_0[pindex] + T * this.wbar_dot[pindex];
-    const omega = this.omega_0[pindex] + T * this.omega_dot[pindex];
+    var a = this.a_0[pindex] + T * this.a_dot[pindex];
+    var e = this.e_0[pindex] + T * this.e_dot[pindex];
+    var I = this.I_0[pindex] + T * this.I_dot[pindex];
+    var L = this.L_0[pindex] + T * this.L_dot[pindex];
+    var wbar = this.wbar_0[pindex] + T * this.wbar_dot[pindex];
+    var omega = this.omega_0[pindex] + T * this.omega_dot[pindex];
     // argument of perhelion
-    const w = wbar - omega;
+    var w = wbar - omega;
     // mean anomaly
     // FINISH ME: add correction terms for outer planets
     // UPDATE: corrections only needed for 3000/3000 AD/BC tables
