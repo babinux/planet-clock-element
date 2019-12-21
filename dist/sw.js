@@ -26,24 +26,16 @@ self.addEventListener('message', (event) => {
  */
 self.__precacheManifest = [
   {
-    "url": "index.html",
-    "revision": "64bf9c34376f275a0650e8f4dd05a240"
+    "url": "index.js",
+    "revision": "ac5929024be904f1929be7c4f9b892f1"
   },
   {
-    "url": "inline-entry.0-72d647b7.js",
-    "revision": "94c8259fd6edffe806111030f9d4185a"
+    "url": "src/PlanetClockElement.js",
+    "revision": "52a647e20c74c6e2ea96e53d6091355c"
   },
   {
-    "url": "polyfills/custom-elements-es5-adapter.84b300ee818dce8b351c7cc7c100bcf7.js",
-    "revision": "cff507bc95ad1d6bf1a415cc9c8852b0"
-  },
-  {
-    "url": "polyfills/dynamic-import.b745cfc9384367cc18b42bbef2bbdcd9.js",
-    "revision": "ed55766050be285197b8f511eacedb62"
-  },
-  {
-    "url": "polyfills/webcomponents.dae9f79d9d6992b6582e204c3dd953d3.js",
-    "revision": "fe4a22f36087db029cd3f476a1935410"
+    "url": "src/style.css",
+    "revision": "a1c599f00182ebe32041d7b7ad6e87fe"
   }
 ].concat(self.__precacheManifest || []);
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
