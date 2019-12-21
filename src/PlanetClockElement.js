@@ -7,20 +7,18 @@ import {
 
 
 import style from "./style.css";
-
 console.log(style);
 
 
-if (false) {
-  const sheet = new CSSStyleSheet();
-  sheet.replace('@import url("/src/style.css")')
-    .then(sheet => {
-      console.log('Styles loaded successfully');
-    })
-    .catch(err => {
-      console.error('Failed to load:', err);
-    });
-}
+  // const sheet = new CSSStyleSheet();
+  // sheet.replace('@import url("../src/style.css")')
+  //   .then(sheet => {
+  //     console.log('Styles loaded successfully');
+  //   })
+  //   .catch(err => {
+  //     console.error('Failed to load:', err);
+  //   });
+
 
 export class PlanetClockElement extends LitElement {
 
@@ -84,7 +82,7 @@ export class PlanetClockElement extends LitElement {
     // ];
 
     return [
-      // css `${style}`
+  //     ,
    css `${unsafeCSS(style)}`
 
     ];
