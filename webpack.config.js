@@ -36,8 +36,7 @@ const WebpackIndexHTMLPlugin = require('@open-wc/webpack-index-html-plugin');
 
 
 module.exports = {
-      mode: 'development',
-
+  
   entry: path.resolve(__dirname, './index.js'),
 
   output: {
@@ -64,5 +63,23 @@ module.exports = {
     ],
   },
 
- 
+  plugins: [
+    new WebpackIndexHTMLPlugin({
+        minify: false,
+
+      template: ({
+        assets,
+        entries,
+        legacyEntries,
+        variation
+      }) => `
+        <html>
+          <head></head>
+          <body>
+            <planet-clock-element color="yellow"></planet-clock-element>
+          </body>
+        </html>
+      `,
+    }),
+  ],
 };

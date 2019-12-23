@@ -2,28 +2,37 @@ import {
   LitElement,
   html,
   css,
-  unsafeCSS
+  unsafeCSS,
+  customElement
 } from 'lit-element';
 
 
-import style from "./style.css";
+// import style from './style.css'
+import Style1 from './style.scss';
+
+// // @customElement('style');
+// customElements.define('styled', styled);
+
+// export class styled extends LitElement {
+//   static styles = [style];
+//   render() {
+//     return html `<p>such style. very win</p>`;
+//   }
+// }
 
 
-const sheet = new CSSStyleSheet();
-sheet.replace('@import url("../src/style.css")')
-  .then(sheet => {
-    console.log('Styles loaded successfully');
-  })
-  .catch(err => {
-    console.error('Failed to load:', err);
-  });
+
+
+
+// console.log(style);
+
 
 
 
 export class PlanetClockElement extends LitElement {
   static get properties() {
     return {
-      date: {
+      posterDate: {
         type: String,
         reflect: true
       },
@@ -38,17 +47,46 @@ export class PlanetClockElement extends LitElement {
     };
   }
 
+  firstUpdated(changedProperties) {
+    console.log(changedProperties);
+    // console.log(this.styles);
+
+
+    this.myastro = this.shadowRoot.querySelector('#myastro');
+    this.planets = this.shadowRoot.querySelectorAll('.planet');
+    this.orbits = this.shadowRoot.querySelectorAll('.orbit');
+    this.sun = this.shadowRoot.querySelector('#sun');
+    this.loaded = true;
+
+    this.checkBrowser();
+    this.updatePlanetMap();
+  }
+
   constructor() {
     super();
 
     this.loaded = false;
 
-    if (typeof style === 'undefined') {
-      this.shadowRoot.adoptedStyleSheets = [sheet];
-    }
+    // const sheet = new CSSStyleSheet();
+    // if (typeof style === 'undefined' || style === null) {
 
-    // this.date = new Date();
-    this.date = new Date('Thu Aug 22 2019 20:36:10 GMT-0800 (Pacific Standard Time)');
+    //   sheet.replace('@import url("../src/style.css")')
+    //     .then(sheet => {
+    //       console.log('Styles loaded successfully');
+    //     })
+    //     .catch(err => {
+    //       console.error('Failed to load:', err);
+    //     });
+
+    // this.shadowRoot.adoptedStyleSheets = [Style1];
+    // this.shadowRoot.adoptedStyleSheets = [Style1.cssText];
+
+    //   console.log(sheet.cssRules);
+    // }
+
+
+    // this.posterDate = new Date();
+    this.posterDate = new Date('Thu Aug 22 2019 20:36:10 GMT-0800 (Pacific Standard Time)');
 
     // compute elapsed time in centuries, which is what JPL tables use
     const janFirst2000 = new Date(2000, 0, 1, 12, 0, 0);
@@ -59,17 +97,33 @@ export class PlanetClockElement extends LitElement {
   }
 
   static get styles() {
+    // console.log(Style1.cssText);
 
-    if (typeof style !== 'undefined') {
-      return [
-        css `${unsafeCSS(style)}`
-      ];
-    }
+    return [Style1];
+    // return [css `${Style1.cssText}`];
+
+    // return [css `${unsafeCSS(Style1)}`];
+
+    // return [css `${unsafeCSS(Style1.cssText)}`];
   }
+
+  // static get styles() {
+
+
+
+  // //   // console.log(this.styles);
+
+
+  // //   if (typeof style !== 'undefined') {
+  // //     return [
+  // //       css `${unsafeCSS(style)}`
+  // //     ];
+  // //   }
+  // }
 
   togglePlanetAnimation(event) {
     console.log("Toggling animation");
-    this.planets.forEach(function (planet) {
+    this.planets.forEach(planet => {
       planet.classList.toggle('play');
     })
 
@@ -91,7 +145,8 @@ export class PlanetClockElement extends LitElement {
 
     <style>
       #myastro {
-          --orbit-color: ${this.color}!important;
+          --orbit-color: var(${this.color}, green)!important;
+          background-color: lightcyan;
         }
     </style>
     
@@ -133,18 +188,7 @@ export class PlanetClockElement extends LitElement {
     `;
   }
 
-  firstUpdated(changedProperties) {
-    console.log(changedProperties);
 
-    this.myastro = this.shadowRoot.querySelector('#myastro');
-    this.planets = this.shadowRoot.querySelectorAll('.planet');
-    this.orbits = this.shadowRoot.querySelectorAll('.orbit');
-    this.sun = this.shadowRoot.querySelector('#sun');
-    this.loaded = true;
-
-    this.checkBrowser();
-    this.updatePlanetMap();
-  }
 
   computeReferenceAngles() {
     // compute reference angles of planets for
@@ -152,7 +196,7 @@ export class PlanetClockElement extends LitElement {
     // JPL orrery reference time is Jan 1 2000
     // (noon UT, but that won't make a diff for display)
     var Teph =
-      (this.date.getTime() - this.refDate.getTime()) /
+      (this.posterDate.getTime() - this.refDate.getTime()) /
       (1000 * 60 * 60 * 24 * 36525);
     var TephJan =
       (this.TimeSinceFirstJanOfThisYear.getTime() - this.refDate.getTime()) /
@@ -170,10 +214,10 @@ export class PlanetClockElement extends LitElement {
 
   updatePlanetMap() {
     this.computeReferenceAngles();
-    this.myastro.style.setProperty("--days-this-year", parseInt(this.daysThisYear(this.date.getFullYear())));
+    this.myastro.style.setProperty("--days-this-year", parseInt(this.daysThisYear(this.posterDate.getFullYear())));
     this.setPlanetsOrbits();
   }
-  
+
   isLeapYear(yearDate) {
     return yearDate % 400 === 0 || (yearDate % 100 !== 0 && yearDate % 4 === 0);
   }
@@ -319,7 +363,7 @@ export class PlanetClockElement extends LitElement {
     var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
     // Firefox 1.0+
     var isFirefox = typeof InstallTrigger !== 'undefined';
-    if (isFirefox) {
+    if (true || isFirefox) {
       console.log("Browser is FIREFOX switching to 'Layout JS' function ");
       this.setLayout();
     }
@@ -361,7 +405,7 @@ export class PlanetClockElement extends LitElement {
 
     this.RefAngle = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]; // filled in on init
     this.displayOffset = true;
-    let FirstJanOfThisYear = new Date(this.date.getFullYear(), 0, 1, 12, 0, 0);
+    let FirstJanOfThisYear = new Date(this.posterDate.getFullYear(), 0, 1, 12, 0, 0);
     this.TimeSinceFirstJanOfThisYear = new Date(
       FirstJanOfThisYear.getTime() -
       FirstJanOfThisYear.getTimezoneOffset() * 60 * 1000
@@ -464,3 +508,4 @@ export class PlanetClockElement extends LitElement {
 
 // Register the element with the browser
 // customElements.define('planet-clock-element', PlanetClockElement);
+window.customElements.define('planet-clock-element', PlanetClockElement);
