@@ -138,7 +138,7 @@ const D=(t,e)=>`${t}--${e}`;let B=!0;void 0===window.ShadyCSS?B=!1:void 0===wind
 
     <style>
       #myastro {
-          --orbit-color: var(${this.color}, green)!important;
+          --orbit-color: ${this.color}!important;
           background-color: lightcyan;
         }
     </style>

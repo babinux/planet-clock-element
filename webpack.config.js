@@ -76,7 +76,7 @@ module.exports = {
         <html>
           <head></head>
           <body>
-            <planet-clock-element color="yellow"></planet-clock-element>
+            <planet-clock-element color="purple" ></planet-clock-element>
           </body>
         </html>
       `,
