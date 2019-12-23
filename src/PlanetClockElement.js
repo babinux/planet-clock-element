@@ -1,14 +1,16 @@
 import {
   LitElement,
-  html,
-  css,
-  unsafeCSS,
-  customElement
+  html
 } from 'lit-element';
 
 import customStyle from './style.scss';
 
 export class PlanetClockElement extends LitElement {
+
+  static get styles() {
+    return [customStyle];
+  }
+
   static get properties() {
     return {
       posterDate: {
@@ -27,17 +29,20 @@ export class PlanetClockElement extends LitElement {
   }
 
   firstUpdated(changedProperties) {
-    console.log(changedProperties);
-    
-    this.myastro = this.shadowRoot.querySelector('#myastro');
+    console.log("firstUpdated(changedProperties):  " +
+      changedProperties);
+
+    this.componentContainer = this.shadowRoot.querySelector('#myastro');
+    this.sun = this.shadowRoot.querySelector('#sun');
     this.planets = this.shadowRoot.querySelectorAll('.planet');
     this.orbits = this.shadowRoot.querySelectorAll('.orbit');
-    this.sun = this.shadowRoot.querySelector('#sun');
-    this.loaded = true;
 
+    this.loaded = true;
     this.checkBrowser();
     this.updatePlanetMap();
   }
+
+
 
   constructor() {
     super();
@@ -61,7 +66,6 @@ export class PlanetClockElement extends LitElement {
     //   console.log(sheet.cssRules);
     // }
 
-
     // this.posterDate = new Date();
     this.posterDate = new Date('Thu Aug 22 2019 20:36:10 GMT-0800 (Pacific Standard Time)');
 
@@ -73,27 +77,39 @@ export class PlanetClockElement extends LitElement {
 
   }
 
-  static get styles() {
-    return [customStyle];
+  attributeChangedCallback(attr, oldVal, newVal) {
+    console.log('attribute change: ', attr, newVal);
+
+    if (attr === 'date' && this.loaded) {
+      newVal = new Date(newVal);
+    } else {
+
+    }
+
+    super.attributeChangedCallback(attr, oldVal, newVal);
+    this.updatePlanetMap();
   }
 
   togglePlanetAnimation(event) {
-    console.log("Toggling animation");
+    console.log("Toggling planet animation");
     this.planets.forEach(planet => {
       planet.classList.toggle('play');
     })
-
   }
 
-  attributeChangedCallback(name, oldVal, newVal) {
-    console.log('attribute change: ', name, newVal);
+  updatePlanetMap() {
+    this.computeReferenceAngles();
+    this.componentContainer.style.setProperty("--days-this-year", parseInt(this.daysThisYear()));
+    this.setPlanetsOrbits();
+  }
 
-    if (name == 'date' && this.loaded) {
-      super.attributeChangedCallback(name, oldVal, new Date(newVal));
-      this.updatePlanetMap()
-    } else {
-      super.attributeChangedCallback(name, oldVal, newVal);
-    }
+  daysThisYear() {
+    return this.isLeapYear() ? 366 : 365;
+  }
+
+  isLeapYear() {
+    const yearDate = this.posterDate.getYear();
+    return yearDate % 400 === 0 || (yearDate % 100 !== 0 && yearDate % 4 === 0);
   }
 
   render() {
@@ -167,22 +183,6 @@ export class PlanetClockElement extends LitElement {
       }
     }
   }
-
-  updatePlanetMap() {
-    this.computeReferenceAngles();
-    this.myastro.style.setProperty("--days-this-year", parseInt(this.daysThisYear(this.posterDate.getFullYear())));
-    this.setPlanetsOrbits();
-  }
-
-  isLeapYear(yearDate) {
-    return yearDate % 400 === 0 || (yearDate % 100 !== 0 && yearDate % 4 === 0);
-  }
-
-  daysThisYear(isLeapYearBool) {
-    return this.isLeapYear(isLeapYearBool) ? 366 : 365;
-  }
-
-
 
 
   JPL(T, pindex) {
@@ -277,15 +277,15 @@ export class PlanetClockElement extends LitElement {
       //added 180 deg to put 1st of jan at the top
       angle[index] = offset * this.RefAngle[index] * 180 / Math.PI + 180;
     }
-    this.myastro.style.setProperty("--start-mercury", angle[0]);
-    this.myastro.style.setProperty("--start-venus", angle[1]);
-    // this.myastro.style.setProperty("--start-earth", currentTime.getDate());
-    this.myastro.style.setProperty("--start-earth", angle[2]);
-    this.myastro.style.setProperty("--start-mars", angle[3]);
-    this.myastro.style.setProperty("--start-jupiter", angle[4]);
-    this.myastro.style.setProperty("--start-saturn", angle[5]);
-    this.myastro.style.setProperty("--start-uranus", angle[6]);
-    this.myastro.style.setProperty("--start-neptune", angle[7]);
+    this.componentContainer.style.setProperty("--start-mercury", angle[0]);
+    this.componentContainer.style.setProperty("--start-venus", angle[1]);
+    // this.componentContainer.style.setProperty("--start-earth", currentTime.getDate());
+    this.componentContainer.style.setProperty("--start-earth", angle[2]);
+    this.componentContainer.style.setProperty("--start-mars", angle[3]);
+    this.componentContainer.style.setProperty("--start-jupiter", angle[4]);
+    this.componentContainer.style.setProperty("--start-saturn", angle[5]);
+    this.componentContainer.style.setProperty("--start-uranus", angle[6]);
+    this.componentContainer.style.setProperty("--start-neptune", angle[7]);
   }
 
   setLayout() {
@@ -397,7 +397,7 @@ export class PlanetClockElement extends LitElement {
     //var Orbit = [ 0.4, 0.7, 1.0, 1.5,     3.0, 4.0, 5.0, 6.0 ];
     // orbit periods -- we use these to speed up animation
     // (caluating new positions de novo from JPL data in each frame may be too slow)
-    var Period = [88.0, 224.7, parseInt(this.daysThisYear(2019)), 687.0, 4331.0, 10747.0, 30589.0, 59800.0];
+    var Period = [88.0, 224.7, parseInt(this.daysThisYear()), 687.0, 4331.0, 10747.0, 30589.0, 59800.0];
     // this.RefAngle[ ] are angle in radians computed from JPL The JPL
     // tables return these wrt First Point of Aries which according
     // to canvas plotting convention would be at the six-o-clock position
@@ -454,9 +454,8 @@ export class PlanetClockElement extends LitElement {
     // console.log(currentTime.getDate());
     // console.log(currentTime.getYear());
     // console.log(currentTime.getMonth());
-    var markOffset = 360 / this.daysThisYear(2016);
+    var markOffset = 360 / this.daysThisYear();
     // console.log(markOffset);
-
 
   }
 
