@@ -6,28 +6,7 @@ import {
   customElement
 } from 'lit-element';
 
-
-// import style from './style.css'
-import Style1 from './style.scss';
-
-// // @customElement('style');
-// customElements.define('styled', styled);
-
-// export class styled extends LitElement {
-//   static styles = [style];
-//   render() {
-//     return html `<p>such style. very win</p>`;
-//   }
-// }
-
-
-
-
-
-// console.log(style);
-
-
-
+import customStyle from './style.scss';
 
 export class PlanetClockElement extends LitElement {
   static get properties() {
@@ -49,9 +28,7 @@ export class PlanetClockElement extends LitElement {
 
   firstUpdated(changedProperties) {
     console.log(changedProperties);
-    // console.log(this.styles);
-
-
+    
     this.myastro = this.shadowRoot.querySelector('#myastro');
     this.planets = this.shadowRoot.querySelectorAll('.planet');
     this.orbits = this.shadowRoot.querySelectorAll('.orbit');
@@ -97,29 +74,8 @@ export class PlanetClockElement extends LitElement {
   }
 
   static get styles() {
-    // console.log(Style1.cssText);
-
-    return [Style1];
-    // return [css `${Style1.cssText}`];
-
-    // return [css `${unsafeCSS(Style1)}`];
-
-    // return [css `${unsafeCSS(Style1.cssText)}`];
+    return [customStyle];
   }
-
-  // static get styles() {
-
-
-
-  // //   // console.log(this.styles);
-
-
-  // //   if (typeof style !== 'undefined') {
-  // //     return [
-  // //       css `${unsafeCSS(style)}`
-  // //     ];
-  // //   }
-  // }
 
   togglePlanetAnimation(event) {
     console.log("Toggling animation");
