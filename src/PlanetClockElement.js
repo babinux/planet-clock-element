@@ -33,6 +33,9 @@ export class PlanetClockElement extends LitElement {
       changedProperties);
 
     this.componentContainer = this.shadowRoot.querySelector('#myastro');
+    console.log(this.shadowRoot);
+    console.log(this.componentContainer);
+   
     this.sun = this.shadowRoot.querySelector('#sun');
     this.planets = this.shadowRoot.querySelectorAll('.planet');
     this.orbits = this.shadowRoot.querySelectorAll('.orbit');
@@ -99,7 +102,9 @@ export class PlanetClockElement extends LitElement {
 
   updatePlanetMap() {
     this.computeReferenceAngles();
-    this.componentContainer.style.setProperty("--days-this-year", parseInt(this.daysThisYear()));
+    if (typeof this.componentContainer !== 'undefined'){
+      this.componentContainer.style.setProperty("--days-this-year", parseInt(this.daysThisYear()));
+    }
     this.setPlanetsOrbits();
   }
 
@@ -112,15 +117,26 @@ export class PlanetClockElement extends LitElement {
     return yearDate % 400 === 0 || (yearDate % 100 !== 0 && yearDate % 4 === 0);
   }
 
-  render() {
-    return html ` 
+  // injectStyle(color) {
+  //   return html `<style> 
+  //     #myastro {
+  //       --orbit-color: ${color}!important;
+  //       background-color: lightcyan;   
+  //     }     
+  //   </style>`;
+  // } 
 
-    <style>
-      #myastro {
-          --orbit-color: ${this.color}!important;
-          background-color: lightcyan;
-        }
-    </style>
+  render() {
+    let stylee;
+    if (this.color){
+      stylee = html`<style>#myastro { --orbit-color: ${this.color} !important; background-color: lightcyan; } </style>`;
+    }else{
+      stylee = 'blabla';
+    }
+
+    return html `
+    ${stylee}
+
 
     <h3> ${this.color} </h3>
     
@@ -279,15 +295,17 @@ export class PlanetClockElement extends LitElement {
       //added 180 deg to put 1st of jan at the top
       angle[index] = offset * this.RefAngle[index] * 180 / Math.PI + 180;
     }
-    this.componentContainer.style.setProperty("--start-mercury", angle[0]);
-    this.componentContainer.style.setProperty("--start-venus", angle[1]);
-    // this.componentContainer.style.setProperty("--start-earth", currentTime.getDate());
-    this.componentContainer.style.setProperty("--start-earth", angle[2]);
-    this.componentContainer.style.setProperty("--start-mars", angle[3]);
-    this.componentContainer.style.setProperty("--start-jupiter", angle[4]);
-    this.componentContainer.style.setProperty("--start-saturn", angle[5]);
-    this.componentContainer.style.setProperty("--start-uranus", angle[6]);
-    this.componentContainer.style.setProperty("--start-neptune", angle[7]);
+    if (typeof this.componentContainer !== 'undefined'){
+      this.componentContainer.style.setProperty("--start-mercury", angle[0]);
+      this.componentContainer.style.setProperty("--start-venus", angle[1]);
+      // this.componentContainer.style.setProperty("--start-earth", currentTime.getDate());
+      this.componentContainer.style.setProperty("--start-earth", angle[2]);
+      this.componentContainer.style.setProperty("--start-mars", angle[3]);
+      this.componentContainer.style.setProperty("--start-jupiter", angle[4]);
+      this.componentContainer.style.setProperty("--start-saturn", angle[5]);
+      this.componentContainer.style.setProperty("--start-uranus", angle[6]);
+      this.componentContainer.style.setProperty("--start-neptune", angle[7]);
+    }
   }
 
   setLayout() {
