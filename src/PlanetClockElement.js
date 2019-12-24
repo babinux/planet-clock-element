@@ -35,7 +35,7 @@ export class PlanetClockElement extends LitElement {
     this.componentContainer = this.shadowRoot.querySelector('#myastro');
     console.log(this.shadowRoot);
     console.log(this.componentContainer);
-   
+
     this.sun = this.shadowRoot.querySelector('#sun');
     this.planets = this.shadowRoot.querySelectorAll('.planet');
     this.orbits = this.shadowRoot.querySelectorAll('.orbit');
@@ -102,7 +102,7 @@ export class PlanetClockElement extends LitElement {
 
   updatePlanetMap() {
     this.computeReferenceAngles();
-    if (typeof this.componentContainer !== 'undefined'){
+    if (typeof this.componentContainer !== 'undefined') {
       this.componentContainer.style.setProperty("--days-this-year", parseInt(this.daysThisYear()));
     }
     this.setPlanetsOrbits();
@@ -128,15 +128,17 @@ export class PlanetClockElement extends LitElement {
 
   render() {
     let stylee;
-    if (this.color){
-      stylee = html`<style>#myastro { --orbit-color: ${this.color} !important; background-color: lightcyan; } </style>`;
-    }else{
+    if (this.color) {
+      stylee = html `<style>#myastro { --orbit-color: ${this.color} !important; background-color: lightcyan; } </style>`;
+    } else {
       stylee = 'blabla';
     }
 
     return html `
-    ${stylee}
-
+    <!-- ${stylee} -->
+<style>
+  #myastro { --orbit-color: ${this.color} !important; background-color: lightcyan; } 
+  </style>
 
     <h3> ${this.color} </h3>
     
@@ -295,7 +297,7 @@ export class PlanetClockElement extends LitElement {
       //added 180 deg to put 1st of jan at the top
       angle[index] = offset * this.RefAngle[index] * 180 / Math.PI + 180;
     }
-    if (typeof this.componentContainer !== 'undefined'){
+    if (typeof this.componentContainer !== 'undefined') {
       this.componentContainer.style.setProperty("--start-mercury", angle[0]);
       this.componentContainer.style.setProperty("--start-venus", angle[1]);
       // this.componentContainer.style.setProperty("--start-earth", currentTime.getDate());
