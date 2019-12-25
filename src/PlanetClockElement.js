@@ -131,11 +131,17 @@ export class PlanetClockElement extends LitElement {
 
   render() {
 
-    let themeStyle = html`<style>#myastro { --orbit-color: ${this.color} !important; background-color: lightcyan; }</style>`;
+    // let themeStyle = html`<style>#myastro { --orbit-color: ${this.color} !important; background-color: lightcyan; }</style>`;
+
+ let styleString;
+ if (this.color) {
+   styleString = html `<style>#myastro { --orbit-color: ${this.color} !important; background-color: lightcyan; } </style>`;
+ }
+
 
     return html `
     
-    ${themeStyle}
+    ${styleString}
 
     <svg @click="${this.togglePlanetAnimation}" class="myastro-render frag" id="myastro" viewBox="0 0 100 100" baseProfile="full" width="100px" height="100px" xmlns="http://www.w3.org/2000/svg">
 
