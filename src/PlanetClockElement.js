@@ -1,9 +1,12 @@
 import {
   LitElement,
-  html
+  html,
+  css,
+  unsafeCSS
 } from 'lit-element';
 
 import customStyle from './style.scss';
+
 
 export class PlanetClockElement extends LitElement {
 
@@ -69,8 +72,15 @@ export class PlanetClockElement extends LitElement {
     //   console.log(sheet.cssRules);
     // }
 
+    this.color = `orange`;
+
     // this.posterDate = new Date();
     this.posterDate = new Date('Thu Aug 22 2019 20:36:10 GMT-0800 (Pacific Standard Time)');
+
+console.log(this.posterDate.getTime());
+
+
+
 
     // compute elapsed time in centuries, which is what JPL tables use
     const janFirst2000 = new Date(2000, 0, 1, 12, 0, 0);
@@ -83,7 +93,7 @@ export class PlanetClockElement extends LitElement {
   attributeChangedCallback(attr, oldVal, newVal) {
     console.log('attribute change: ', attr, newVal);
 
-    if (attr === 'date' && this.loaded) {
+    if (attr === 'posterdate' && this.loaded) {
       newVal = new Date(newVal);
     } else {
 
@@ -101,6 +111,9 @@ export class PlanetClockElement extends LitElement {
   }
 
   updatePlanetMap() {
+    console.log(`this.posterDate`);
+    console.log(this.posterDate);
+    
     this.computeReferenceAngles();
     if (typeof this.componentContainer !== 'undefined') {
       this.componentContainer.style.setProperty("--days-this-year", parseInt(this.daysThisYear()));
@@ -117,31 +130,14 @@ export class PlanetClockElement extends LitElement {
     return yearDate % 400 === 0 || (yearDate % 100 !== 0 && yearDate % 4 === 0);
   }
 
-  // injectStyle(color) {
-  //   return html `<style> 
-  //     #myastro {
-  //       --orbit-color: ${color}!important;
-  //       background-color: lightcyan;   
-  //     }     
-  //   </style>`;
-  // } 
-
   render() {
-    let styleString;
-    if (this.color) {
-      styleString = html `<style>#myastro { --orbit-color: ${this.color} !important; background-color: lightcyan; } </style>`;
-    } else {
-      styleString = 'blabla';
-    }
+
+    this.themeStyle = html `<style>#myastro { --orbit-color: ${this.color} !important; background-color: lightcyan; }</style>`;
 
     return html `
-    ${styleString}
-<!-- <style>
-  #myastro { --orbit-color: ${this.color} !important; background-color: lightcyan; } 
-  </style> -->
-
-    <h3> ${this.color} </h3>
     
+    ${this.themeStyle}
+
     <svg @click="${this.togglePlanetAnimation}" class="myastro-render frag" id="myastro" viewBox="0 0 100 100" baseProfile="full" width="100px" height="100px" xmlns="http://www.w3.org/2000/svg">
 
       <line x1="0" y1="50" x2="100" y2="50" class="" />
@@ -187,13 +183,18 @@ export class PlanetClockElement extends LitElement {
     // calendarDate using JPL tables.
     // JPL orrery reference time is Jan 1 2000
     // (noon UT, but that won't make a diff for display)
-    var Teph =
+
+    console.log(`computeReferenceAngles`);
+        console.log(this.posterDate.getTime());
+
+
+    const Teph =
       (this.posterDate.getTime() - this.refDate.getTime()) /
       (1000 * 60 * 60 * 24 * 36525);
-    var TephJan =
+    const TephJan =
       (this.TimeSinceFirstJanOfThisYear.getTime() - this.refDate.getTime()) /
       (1000 * 60 * 60 * 24 * 36525);
-    for (var index = 0; index < this.RefAngle.length; index++) {
+    for (let index = 0; index < this.RefAngle.length; index++) {
       // adding pi changes the 0 axis from six-o-clock to noon
       // this seems to be how JPL (and others?) plot their stuff
       if (this.displayOffset) {
@@ -383,13 +384,13 @@ export class PlanetClockElement extends LitElement {
 
     this.RefAngle = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]; // filled in on init
     this.displayOffset = true;
-    let FirstJanOfThisYear = new Date(this.posterDate.getFullYear(), 0, 1, 12, 0, 0);
+    const FirstJanOfThisYear = new Date(this.posterDate.getFullYear(), 0, 1, 12, 0, 0);
     this.TimeSinceFirstJanOfThisYear = new Date(
       FirstJanOfThisYear.getTime() -
       FirstJanOfThisYear.getTimezoneOffset() * 60 * 1000
     );
-    var twopi = 2 * Math.PI; // aka 2.0*Math.PI
-    var orbitScale = 70; // looks nice
+    const twopi = 2 * Math.PI; // aka 2.0*Math.PI
+    const orbitScale = 70; // looks nice
     // useful data
     //
     // actual orbit data: 0.4, 0.7, 1.0, 1.5,      5.2, 9.5, 19.2, 30.1
@@ -408,18 +409,18 @@ export class PlanetClockElement extends LitElement {
     /*
     var Size = [ 4879/12756, 12104/12756, 12756/12756, 6792/12756, 0.3*142984/12756, 0.3*120536/12756, 0.3*51118/12756, 0.3*49528/12756 ];
     */
-    var erf = 0.2 * 12756;
-    var Size = [
+    const erf = 0.2 * 12756;
+    const Size = [
       4879 / erf, 12104 / erf, 12756 / erf, 6792 / erf, 0.18 * 142984 / erf, 0.2 * 120536 / erf, 0.2 * 51118 / erf, 0.3 * 49528 / erf
     ];
     // orbit radius -- need to scale outer planets so it all fits on one plot
     // testing indicated there was no mathematical way that gave good results
     // so we just made up something that looked nice
-    var Orbit = [0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0];
+    const Orbit = [0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0];
     //var Orbit = [ 0.4, 0.7, 1.0, 1.5,     3.0, 4.0, 5.0, 6.0 ];
     // orbit periods -- we use these to speed up animation
     // (caluating new positions de novo from JPL data in each frame may be too slow)
-    var Period = [88.0, 224.7, parseInt(this.daysThisYear()), 687.0, 4331.0, 10747.0, 30589.0, 59800.0];
+    const Period = [88.0, 224.7, parseInt(this.daysThisYear()), 687.0, 4331.0, 10747.0, 30589.0, 59800.0];
     // this.RefAngle[ ] are angle in radians computed from JPL The JPL
     // tables return these wrt First Point of Aries which according
     // to canvas plotting convention would be at the six-o-clock position
@@ -476,7 +477,7 @@ export class PlanetClockElement extends LitElement {
     // console.log(currentTime.getDate());
     // console.log(currentTime.getYear());
     // console.log(currentTime.getMonth());
-    var markOffset = 360 / this.daysThisYear();
+    const markOffset = 360 / this.daysThisYear();
     // console.log(markOffset);
 
   }
