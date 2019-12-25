@@ -71,7 +71,6 @@ export class PlanetClockElement extends LitElement {
     //   console.log(sheet.cssRules);
     // }
 
-    this.color = `orange`;
 
     // this.posterDate = new Date();
     this.posterDate = new Date('Thu Aug 22 2019 20:36:10 GMT-0800 (Pacific Standard Time)');
