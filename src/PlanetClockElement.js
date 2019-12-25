@@ -32,8 +32,7 @@ export class PlanetClockElement extends LitElement {
   }
 
   firstUpdated(changedProperties) {
-    console.log("firstUpdated(changedProperties):  " +
-      changedProperties);
+    console.log("firstUpdated(changedProperties):  " + changedProperties);
 
     this.componentContainer = this.shadowRoot.querySelector('#myastro');
     console.log(this.shadowRoot);
@@ -77,7 +76,7 @@ export class PlanetClockElement extends LitElement {
     // this.posterDate = new Date();
     this.posterDate = new Date('Thu Aug 22 2019 20:36:10 GMT-0800 (Pacific Standard Time)');
 
-console.log(this.posterDate.getTime());
+    console.log(this.posterDate.getTime());
 
 
 
@@ -132,11 +131,11 @@ console.log(this.posterDate.getTime());
 
   render() {
 
-    this.themeStyle = html `<style>#myastro { --orbit-color: ${this.color} !important; background-color: lightcyan; }</style>`;
+    let themeStyle = html`<style>#myastro { --orbit-color: ${this.color} !important; background-color: lightcyan; }</style>`;
 
     return html `
     
-    ${this.themeStyle}
+    ${themeStyle}
 
     <svg @click="${this.togglePlanetAnimation}" class="myastro-render frag" id="myastro" viewBox="0 0 100 100" baseProfile="full" width="100px" height="100px" xmlns="http://www.w3.org/2000/svg">
 
