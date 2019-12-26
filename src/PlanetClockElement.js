@@ -134,7 +134,7 @@ export class PlanetClockElement extends LitElement {
 
  let styleString;
  if (this.color) {
-   styleString = html `<style>#myastro { --orbit-color: ${this.color} !important; background-color: lightcyan; } </style>`;
+   styleString = html `<style>#myastro { --orbit-color: ${this.color} !important;} </style>`;
  }
 
 
