@@ -111,7 +111,7 @@ export class PlanetClockElement extends LitElement {
   updatePlanetMap() {
     console.log(`this.posterDate`);
     console.log(this.posterDate);
-    
+
     this.computeReferenceAngles();
     if (typeof this.componentContainer !== 'undefined') {
       this.componentContainer.style.setProperty("--days-this-year", parseInt(this.daysThisYear()));
@@ -132,10 +132,10 @@ export class PlanetClockElement extends LitElement {
 
     // let themeStyle = html`<style>#myastro { --orbit-color: ${this.color} !important; background-color: lightcyan; }</style>`;
 
- let styleString;
- if (this.color) {
-   styleString = html `<style>#myastro { --orbit-color: ${this.color} !important;} </style>`;
- }
+    let styleString;
+    if (this.color) {
+      styleString = html `<style>#myastro { --orbit-color: ${this.color} !important;} </style>`;
+    }
 
 
     return html `
@@ -189,7 +189,7 @@ export class PlanetClockElement extends LitElement {
     // (noon UT, but that won't make a diff for display)
 
     console.log(`computeReferenceAngles`);
-        console.log(this.posterDate.getTime());
+    console.log(this.posterDate.getTime());
 
 
     const Teph =

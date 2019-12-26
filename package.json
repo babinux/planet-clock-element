@@ -92,7 +92,8 @@
     ]
   },
   "scripts": {
-    "start": "webpack --mode=production && cd dist && es-dev-server --app-index index.html --node-resolve --open --watch ",
+    "start": "webpack --mode=development  --node-resolve --open --watch",
+    "startXXXX": "webpack --mode=production && cd dist && es-dev-server --app-index index.html --node-resolve --open --watch ",
     "lint:eslint": "eslint --ext .js,.html . --ignore-path .gitignore",
     "format:eslint": "eslint --ext .js,.html . --fix --ignore-path .gitignore",
     "lint:prettier": "prettier \"**/*.js\" --check --ignore-path .gitignore",
