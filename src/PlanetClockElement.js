@@ -1,8 +1,6 @@
 import {
   LitElement,
-  html,
-  css,
-  unsafeCSS
+  html
 } from 'lit-element';
 
 import customStyle from './style.scss';

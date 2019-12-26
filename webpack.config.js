@@ -68,14 +68,11 @@ module.exports = {
     new WebpackIndexHTMLPlugin({
         minify: false,
 
-      template: ({
-        assets,
-        entries,
-        legacyEntries,
-        variation
-      }) => `
+      template: () => `
         <html>
-          <head></head>
+          <head>
+          
+          </head>
           <body>
             <planet-clock-element color="purple" ></planet-clock-element>
           </body>
