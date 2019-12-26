@@ -40,7 +40,8 @@ module.exports = {
   entry: path.resolve(__dirname, './index.js'),
 
   output: {
-    filename: '[name].js',
+    path: path.resolve('./dist'),
+    filename: 'index.js',
     chunkFilename: '[name].[chunkhash].js',
   },
   module: {
