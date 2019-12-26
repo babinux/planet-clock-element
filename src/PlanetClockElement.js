@@ -8,15 +8,9 @@ import customStyle from './style.scss';
 
 export class PlanetClockElement extends LitElement {
 
-  static niceClock() {
-    return "niceClock";
-
-  }
-
   static get styles() {
     return [customStyle];
   }
-
 
   static get properties() {
     return {
@@ -148,8 +142,8 @@ export class PlanetClockElement extends LitElement {
 
     <svg @click="${this.togglePlanetAnimation}" class="myastro-render frag" id="myastro" viewBox="0 0 100 100" baseProfile="full" width="100px" height="100px" xmlns="http://www.w3.org/2000/svg">
 
-      <line x1="0" y1="50" x2="100" y2="50" class="" />
-      <line x1="50" y1="0" x2="50" y2="100" class="" />
+      <line x1="0" y1="50" x2="100" y2="50" class="lineX" />
+      <line x1="50" y1="0" x2="50" y2="100" class="lineY" />
 
       <circle cx="0" cy="0" r="0.7" id="sun" class="sun" />
 
