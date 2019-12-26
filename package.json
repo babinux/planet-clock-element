@@ -4,8 +4,8 @@
   "description": "Webcomponent planet-clock-element following open-wc recommendations",
   "author": "planet-clock-element",
   "license": "MIT",
-  "main": "index.js",
-  "module": "index.js",
+  "main": "./dist/main.js",
+  "module": "./dist/main.js",
   "babel": {
     "presets": [
       "@babel/preset-flow",
