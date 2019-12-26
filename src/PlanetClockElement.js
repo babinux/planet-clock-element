@@ -216,19 +216,19 @@ export class PlanetClockElement extends LitElement {
     //
     // pindex: 0=mercury, 1=venus, 2=earth, etc.
     // orbit parameters from tables
-    var a = this.a_0[pindex] + T * this.a_dot[pindex];
-    var e = this.e_0[pindex] + T * this.e_dot[pindex];
-    var I = this.I_0[pindex] + T * this.I_dot[pindex];
-    var L = this.L_0[pindex] + T * this.L_dot[pindex];
-    var wbar = this.wbar_0[pindex] + T * this.wbar_dot[pindex];
-    var omega = this.omega_0[pindex] + T * this.omega_dot[pindex];
+    const a = this.a_0[pindex] + T * this.a_dot[pindex];
+    const e = this.e_0[pindex] + T * this.e_dot[pindex];
+    const I = this.I_0[pindex] + T * this.I_dot[pindex];
+    const L = this.L_0[pindex] + T * this.L_dot[pindex];
+    const wbar = this.wbar_0[pindex] + T * this.wbar_dot[pindex];
+    const omega = this.omega_0[pindex] + T * this.omega_dot[pindex];
     // argument of perhelion
-    var w = wbar - omega;
+    const w = wbar - omega;
     // mean anomaly
     // FINISH ME: add correction terms for outer planets
     // UPDATE: corrections only needed for 3000/3000 AD/BC tables
     // (we're using the 1800/2050 table)
-    var M = L - wbar;
+    let M = L - wbar;
     // modulus M so that -180 < M < 180
     while (M < 180) M = M + 360;
     while (M > 180) M = M - 360;
@@ -238,14 +238,14 @@ export class PlanetClockElement extends LitElement {
     //var E = kepler_bisect(M,e_degrees);
     // better -- convert M to radians and just use e as given
     // this will return E in radians
-    var M_radians = Math.PI / 180.0 * M;
-    var E_radians = this.kepler_iterate(M_radians, e);
+    const mRadians = Math.PI / 180.0 * M;
+    const eRadians = this.kepler_iterate(mRadians, e);
     // compute heliocentric coordinates
     // note zprime = 0 by definition
     // these equations are just x = a cos(foo) and y = b sin(foo)
     // we also translate x to the focus (by subtracting a*e)
-    var x_prime = a * (Math.cos(E_radians) - e);
-    var y_prime = a * Math.sqrt(1.0 - e * e) * Math.sin(E_radians);
+    var xPrime = a * (Math.cos(eRadians) - e);
+    var yPrime = a * Math.sqrt(1.0 - e * e) * Math.sin(eRadians);
     // compute coordinates in J2000 ecliptic
     // we don't care about z_ecl in our application
     var w_radians = Math.PI / 180.0 * w;
@@ -259,8 +259,8 @@ export class PlanetClockElement extends LitElement {
     var scc = sc * Math.cos(I_radians);
     var csc = cs * Math.cos(I_radians);
     var ccc = cc * Math.cos(I_radians);
-    var x_ecl = (cc - ssc) * x_prime + (-sc - csc) * y_prime;
-    var y_ecl = (cs + scc) * x_prime + (-ss + ccc) * y_prime;
+    var x_ecl = (cc - ssc) * xPrime + (-sc - csc) * yPrime;
+    var y_ecl = (cs + scc) * xPrime + (-ss + ccc) * yPrime;
     // for display, we convert x_ecl and y_ecl
     // to an angle and map that onto our assumed radii
     // y coordinate goes first in atan2
