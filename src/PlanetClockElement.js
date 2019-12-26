@@ -8,9 +8,15 @@ import customStyle from './style.scss';
 
 export class PlanetClockElement extends LitElement {
 
+  static niceClock() {
+    return "niceClock";
+
+  }
+
   static get styles() {
     return [customStyle];
   }
+
 
   static get properties() {
     return {
