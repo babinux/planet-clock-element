@@ -44,6 +44,9 @@ module.exports = {
     filename: 'index.js',
     chunkFilename: '[name].[chunkhash].js',
   },
+  devServer: {
+    contentBase: './dist',
+  },
   module: {
     rules: [{
         test: /\.css|\.s(c|a)ss$/,

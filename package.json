@@ -71,7 +71,8 @@
     "style-loader": "^1.1.1",
     "uglifycss": "0.0.29",
     "webpack": "^4.28.0",
-    "webpack-cli": "^3.3.4"
+    "webpack-cli": "^3.3.4",
+    "webpack-dev-server": "^3.10.1"
   },
   "eslintConfig": {
     "extends": [
@@ -93,8 +94,7 @@
     ]
   },
   "scripts": {
-    "start": "webpack --mode=development  --node-resolve --open --watch",
-    "startXXXX": "webpack --mode=production && cd dist && es-dev-server --app-index index.html --node-resolve --open --watch ",
+    "start": "webpack-dev-server  --mode=development  --node-resolve --open --watch --progress --info-verbosity verbose",
     "lint:eslint": "eslint --ext .js,.html . --ignore-path .gitignore",
     "format:eslint": "eslint --ext .js,.html . --fix --ignore-path .gitignore",
     "lint:prettier": "prettier \"**/*.js\" --check --ignore-path .gitignore",
