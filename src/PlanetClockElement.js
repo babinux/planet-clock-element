@@ -30,7 +30,7 @@ export class PlanetClockElement extends LitElement {
   }
 
   firstUpdated(changedProperties) {
-    console.log("firstUpdated(changedProperties):  " + changedProperties);
+    console.log(`firstUpdated(changedProperties):  ${changedProperties}`);
 
     this.componentContainer = this.shadowRoot.querySelector('#myastro');
     console.log(this.shadowRoot);
@@ -87,19 +87,20 @@ export class PlanetClockElement extends LitElement {
   }
 
   attributeChangedCallback(attr, oldVal, newVal) {
-    console.log('attribute change: ', attr, newVal);
+
+    let newProp = newVal;
+    console.log('attribute change: ', attr, newProp);
+
 
     if (attr === 'posterdate' && this.loaded) {
-      newVal = new Date(newVal);
-    } else {
-
+      newProp = new Date(newVal);
     }
 
     super.attributeChangedCallback(attr, oldVal, newVal);
     this.updatePlanetMap();
   }
 
-  togglePlanetAnimation(event) {
+  togglePlanetAnimation() {
     console.log("Toggling planet animation");
     this.planets.forEach(planet => {
       planet.classList.toggle('play');
@@ -112,7 +113,7 @@ export class PlanetClockElement extends LitElement {
 
     this.computeReferenceAngles();
     if (typeof this.componentContainer !== 'undefined') {
-      this.componentContainer.style.setProperty("--days-this-year", parseInt(this.daysThisYear()));
+      this.componentContainer.style.setProperty("--days-this-year", parseInt(this.daysThisYear(), 10));
     }
     this.setPlanetsOrbits();
   }
@@ -196,7 +197,7 @@ export class PlanetClockElement extends LitElement {
     const TephJan =
       (this.TimeSinceFirstJanOfThisYear.getTime() - this.refDate.getTime()) /
       (1000 * 60 * 60 * 24 * 36525);
-    for (let index = 0; index < this.RefAngle.length; index++) {
+    for (let index = 0; index < this.RefAngle.length; index += 1) {
       // adding pi changes the 0 axis from six-o-clock to noon
       // this seems to be how JPL (and others?) plot their stuff
       if (this.displayOffset) {
@@ -228,47 +229,47 @@ export class PlanetClockElement extends LitElement {
     // (we're using the 1800/2050 table)
     let M = L - wbar;
     // modulus M so that -180 < M < 180
-    while (M < 180) M = M + 360;
-    while (M > 180) M = M - 360;
+    while (M < 180) M += 360;
+    while (M > 180) M -= 360;
     // obtain eccentric anomaly from solution of kepler's equation
     // a "conversion" of e is needed if M and E are in degrees
-    //var e_degrees = (180.0 / Math.PI) * e;
-    //var E = kepler_bisect(M,e_degrees);
+    // var e_degrees = (180.0 / Math.PI) * e;
+    // var E = kepler_bisect(M,e_degrees);
     // better -- convert M to radians and just use e as given
     // this will return E in radians
     const mRadians = Math.PI / 180.0 * M;
-    const eRadians = this.kepler_iterate(mRadians, e);
+    const eRadians = this.keplerIterate(mRadians, e);
     // compute heliocentric coordinates
     // note zprime = 0 by definition
     // these equations are just x = a cos(foo) and y = b sin(foo)
     // we also translate x to the focus (by subtracting a*e)
-    var xPrime = a * (Math.cos(eRadians) - e);
-    var yPrime = a * Math.sqrt(1.0 - e * e) * Math.sin(eRadians);
+    const xPrime = a * (Math.cos(eRadians) - e);
+    const yPrime = a * Math.sqrt(1.0 - e * e) * Math.sin(eRadians);
     // compute coordinates in J2000 ecliptic
     // we don't care about z_ecl in our application
-    var w_radians = Math.PI / 180.0 * w;
-    var omega_radians = Math.PI / 180.0 * omega;
-    var I_radians = Math.PI / 180.0 * I;
-    var cc = Math.cos(w_radians) * Math.cos(omega_radians);
-    var cs = Math.cos(w_radians) * Math.sin(omega_radians);
-    var sc = Math.sin(w_radians) * Math.cos(omega_radians);
-    var ss = Math.sin(w_radians) * Math.sin(omega_radians);
-    var ssc = ss * Math.cos(I_radians);
-    var scc = sc * Math.cos(I_radians);
-    var csc = cs * Math.cos(I_radians);
-    var ccc = cc * Math.cos(I_radians);
-    var x_ecl = (cc - ssc) * xPrime + (-sc - csc) * yPrime;
-    var y_ecl = (cs + scc) * xPrime + (-ss + ccc) * yPrime;
-    // for display, we convert x_ecl and y_ecl
+    const wRadians = Math.PI / 180.0 * w;
+    const omegaRadians = Math.PI / 180.0 * omega;
+    const iRadians = Math.PI / 180.0 * I;
+    const cc = Math.cos(wRadians) * Math.cos(omegaRadians);
+    const cs = Math.cos(wRadians) * Math.sin(omegaRadians);
+    const sc = Math.sin(wRadians) * Math.cos(omegaRadians);
+    const ss = Math.sin(wRadians) * Math.sin(omegaRadians);
+    const ssc = ss * Math.cos(iRadians);
+    const scc = sc * Math.cos(iRadians);
+    const csc = cs * Math.cos(iRadians);
+    const ccc = cc * Math.cos(iRadians);
+    const xEcl = (cc - ssc) * xPrime + (-sc - csc) * yPrime;
+    const yEcl = (cs + scc) * xPrime + (-ss + ccc) * yPrime;
+    // for display, we convert xEcl and yEcl
     // to an angle and map that onto our assumed radii
     // y coordinate goes first in atan2
     // returned value is [-pi,pi]
-    var p_angle = Math.atan2(y_ecl, x_ecl);
-    p_angle = p_angle * -1;
-    return p_angle;
+    let pAngle = Math.atan2(yEcl, xEcl);
+    pAngle *= -1;
+    return pAngle;
   }
 
-  kepler_iterate(M, e) {
+  keplerIterate(M, e) {
     // solve kepler's equation M = E - e * sin(E)
     // using iteration
     // mean anomaly (M) is assumed in radians
@@ -285,7 +286,7 @@ export class PlanetClockElement extends LitElement {
       if (Math.abs(err) < tol) return next_E;
       this_E = next_E;
     }
-    alert("kepler_iterate: No convergence");
+    alert("keplerIterate: No convergence");
     // assume caller checks returned value
     // (by plugging into keplers equation)
     // so we can just return 0 on fail
@@ -297,7 +298,7 @@ export class PlanetClockElement extends LitElement {
     const offset = -1;
     let angle = [];
     for (let index = 0; index < 8; index++) {
-      //added 180 deg to put 1st of jan at the top
+      // added 180 deg to put 1st of jan at the top
       angle[index] = offset * this.RefAngle[index] * 180 / Math.PI + 180;
     }
     if (typeof this.componentContainer !== 'undefined') {
@@ -325,8 +326,8 @@ export class PlanetClockElement extends LitElement {
     sun.setAttribute('cx', 50);
     sun.setAttribute('cy', 50);
 
-    for (let index = 0; index < 9; index++) {
-      let planetOrbitSize = ((orbitCoordinates[index] * 1.03 * planetCenterCoordinates) - planetCenterCoordinates);
+    for (let index = 0; index < 9; index += 1) {
+      const planetOrbitSize = ((orbitCoordinates[index] * 1.03 * planetCenterCoordinates) - planetCenterCoordinates);
 
       orbits[index].setAttribute('r', planetOrbitSize);
       orbits[index].setAttribute('cx', planetCenterCoordinates);
@@ -341,33 +342,33 @@ export class PlanetClockElement extends LitElement {
 
   checkBrowser() {
     // Opera 8.0+
-    var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+    const isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
     // Firefox 1.0+
-    var isFirefox = typeof InstallTrigger !== 'undefined';
+    const isFirefox = typeof InstallTrigger !== 'undefined';
     if (true || isFirefox) {
       console.log("Browser is FIREFOX switching to 'Layout JS' function ");
       this.setLayout();
     }
     // Safari 3.0+ "[object HTMLElementConstructor]" 
-    var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) {
+    const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) {
       return p.toString() === "[object SafariRemoteNotification]";
     })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
     // Internet Explorer 6-11
-    var isIE = /*@cc_on!@*/ false || !!document.documentMode;
+    const isIE = /* @cc_on!@ */ false || !!document.documentMode;
     // Edge 20+
-    var isEdge = !isIE && !!window.StyleMedia;
+    const isEdge = !isIE && !!window.StyleMedia;
     // Chrome 1 - 71
-    var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+    const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
     // Blink engine detection
-    var isBlink = (isChrome || isOpera) && !!window.CSS;
-    var BrowerDetect = 'Detecting browsers by ducktyping:<hr>';
-    BrowerDetect += 'isFirefox: ' + isFirefox + '<br>';
-    BrowerDetect += 'isChrome: ' + isChrome + '<br>';
-    BrowerDetect += 'isSafari: ' + isSafari + '<br>';
-    BrowerDetect += 'isOpera: ' + isOpera + '<br>';
-    BrowerDetect += 'isIE: ' + isIE + '<br>';
-    BrowerDetect += 'isEdge: ' + isEdge + '<br>';
-    BrowerDetect += 'isBlink: ' + isBlink + '<br>';
+    const isBlink = (isChrome || isOpera) && !!window.CSS;
+    let BrowerDetect = 'Detecting browsers by ducktyping:<hr>';
+    BrowerDetect += `isFirefox:  ${isFirefox}  <br>`;
+    BrowerDetect += `isChrome:  ${isChrome}  <br>`;
+    BrowerDetect += `isSafari:  ${isSafari}  <br>`;
+    BrowerDetect += `isOpera:  ${isOpera}  <br>`;
+    BrowerDetect += `isIE:  ${isIE}  <br>`;
+    BrowerDetect += `isEdge:  ${isEdge}  <br>`;
+    BrowerDetect += `isBlink:  ${isBlink}  <br>`;
     // document.body.innerHTML = BrowerDetect;
     // console.log(BrowerDetect);
   }
@@ -391,8 +392,10 @@ export class PlanetClockElement extends LitElement {
       FirstJanOfThisYear.getTime() -
       FirstJanOfThisYear.getTimezoneOffset() * 60 * 1000
     );
-    const twopi = 2 * Math.PI; // aka 2.0*Math.PI
-    const orbitScale = 70; // looks nice
+    // const twopi = 2 * Math.PI; // aka 2.0*Math.PI
+    // const orbitScale = 70; // looks nice
+
+
     // useful data
     //
     // actual orbit data: 0.4, 0.7, 1.0, 1.5,      5.2, 9.5, 19.2, 30.1
@@ -479,7 +482,8 @@ export class PlanetClockElement extends LitElement {
     // console.log(currentTime.getDate());
     // console.log(currentTime.getYear());
     // console.log(currentTime.getMonth());
-    const markOffset = 360 / this.daysThisYear();
+    
+    // const markOffset = 360 / this.daysThisYear();
     // console.log(markOffset);
 
   }

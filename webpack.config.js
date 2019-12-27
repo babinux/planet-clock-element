@@ -1,8 +1,11 @@
 const path = require('path');
-const {
-  createDefaultConfig
-} = require('@open-wc/building-webpack');
 const WebpackIndexHTMLPlugin = require('@open-wc/webpack-index-html-plugin');
+
+
+// const {
+//   createDefaultConfig
+// } = require('@open-wc/building-webpack');
+
 
 // if you need to support IE11 use "modern-and-legacy-config" instead.
 // const { createCompatibilityConfig } = require('@open-wc/building-webpack');
