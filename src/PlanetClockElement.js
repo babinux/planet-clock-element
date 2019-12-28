@@ -104,7 +104,7 @@ export class PlanetClockElement extends LitElement {
   updateUrlFromProps() {
     posterParams.set("color", this.color);
     posterParams.set("posterDate", `${this.posterDate.getFullYear()}-${this.posterDate.toLocaleString('default', { month: 'short' })}-${this.posterDate.getDate()}`);
-    window.history.replaceState({}, "Updating poster Design", `?${posterParams.toString()}`)
+    // window.history.replaceState({}, "Updating poster Design", `?${posterParams.toString()}`)
   }
 
   togglePlanetAnimation() {
