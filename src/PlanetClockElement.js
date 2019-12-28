@@ -5,6 +5,8 @@ import {
 
 import customStyle from './style.scss';
 
+const url = new URL(document.location);
+const posterParams = new URLSearchParams(url.search);
 
 export class PlanetClockElement extends LitElement {
 
@@ -16,7 +18,10 @@ export class PlanetClockElement extends LitElement {
     return {
       posterDate: {
         type: String,
-        reflect: true
+        reflect: true,
+        converter(value) {
+          return new Date(value);
+        }
       },
       daysThisYear: {
         type: Number,
@@ -31,11 +36,10 @@ export class PlanetClockElement extends LitElement {
 
   firstUpdated(changedProperties) {
     console.log(`firstUpdated(changedProperties):  ${changedProperties}`);
+    
+    this.updateUrlFromProps();
 
     this.componentContainer = this.shadowRoot.querySelector('#myastro');
-    console.log(this.shadowRoot);
-    console.log(this.componentContainer);
-
     this.sun = this.shadowRoot.querySelector('#sun');
     this.planets = this.shadowRoot.querySelectorAll('.planet');
     this.orbits = this.shadowRoot.querySelectorAll('.orbit');
@@ -71,9 +75,9 @@ export class PlanetClockElement extends LitElement {
 
 
     // this.posterDate = new Date();
-    this.posterDate = new Date('Thu Aug 22 2019 20:36:10 GMT-0800 (Pacific Standard Time)');
+    // this.posterDate = new Date('Aug 22 2019');
 
-    console.log(this.posterDate.getTime());
+    // console.log(this.posterDate.getTime());
 
 
 
@@ -82,22 +86,30 @@ export class PlanetClockElement extends LitElement {
     const janFirst2000 = new Date(2000, 0, 1, 12, 0, 0);
     this.refDate = new Date(janFirst2000.getTime() - janFirst2000.getTimezoneOffset() * 60 * 1000);
 
+    this.updatePropsFromUrl();
+
     this.constructClock();
 
   }
 
   attributeChangedCallback(attr, oldVal, newVal) {
-
-    let newProp = newVal;
-    console.log('attribute change: ', attr, newProp);
-
-
-    if (attr === 'posterdate' && this.loaded) {
-      newProp = new Date(newVal);
-    }
-
-    super.attributeChangedCallback(attr, oldVal, newVal);
+    // let newProp = newVal;
+    // console.log('attribute change: ', attr, newProp);
+    // super.attributeChangedCallback(attr, oldVal, newVal);
+    
+    this.updateUrlFromProps();
     this.updatePlanetMap();
+  }
+
+  updatePropsFromUrl() {
+    this.color = posterParams.has("color") ? posterParams.get("color") : 'purple';
+    this.posterDate = posterParams.has("posterDate") ? new Date(isNaN(posterParams.get("posterDate")) ? posterParams.get("posterDate") : new Date()) : new Date();
+  }
+
+  updateUrlFromProps() {
+    posterParams.set("color", this.color);
+    posterParams.set("posterDate", `${this.posterDate.getFullYear()}-${this.posterDate.toLocaleString('default', { month: 'short' })}-${this.posterDate.getDate()}`);
+    window.history.replaceState({}, "Updating poster Design", `?${posterParams.toString()}`)
   }
 
   togglePlanetAnimation() {
@@ -108,9 +120,6 @@ export class PlanetClockElement extends LitElement {
   }
 
   updatePlanetMap() {
-    console.log(`this.posterDate`);
-    console.log(this.posterDate);
-
     this.computeReferenceAngles();
     if (typeof this.componentContainer !== 'undefined') {
       this.componentContainer.style.setProperty("--days-this-year", parseInt(this.daysThisYear(), 10));
@@ -482,7 +491,7 @@ export class PlanetClockElement extends LitElement {
     // console.log(currentTime.getDate());
     // console.log(currentTime.getYear());
     // console.log(currentTime.getMonth());
-    
+
     // const markOffset = 360 / this.daysThisYear();
     // console.log(markOffset);
 
