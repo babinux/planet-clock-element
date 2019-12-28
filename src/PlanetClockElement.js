@@ -35,15 +35,12 @@ export class PlanetClockElement extends LitElement {
   }
 
   firstUpdated(changedProperties) {
-    console.log(`firstUpdated(changedProperties):  ${changedProperties}`);
-
-
     this.componentContainer = this.shadowRoot.querySelector('#myastro');
     this.sun = this.shadowRoot.querySelector('#sun');
     this.planets = this.shadowRoot.querySelectorAll('.planet');
     this.orbits = this.shadowRoot.querySelectorAll('.orbit');
 
-    // this.updateUrlFromProps();
+    this.updateUrlFromProps();
 
     this.loaded = true;
     this.checkBrowser();
@@ -99,9 +96,7 @@ export class PlanetClockElement extends LitElement {
     this.updatePlanetMap();
   }
 
-  updatePropsFromUrl() {
-    console.log(posterParams.get("color"));
-    
+  updatePropsFromUrl() {    
     this.color = posterParams.has("color") ? posterParams.get("color") : 'pink';
     this.posterDate = posterParams.has("posterDate") ? new Date(isNaN(posterParams.get("posterDate")) ? posterParams.get("posterDate") : new Date()) : new Date();
   }
@@ -195,10 +190,6 @@ export class PlanetClockElement extends LitElement {
     // calendarDate using JPL tables.
     // JPL orrery reference time is Jan 1 2000
     // (noon UT, but that won't make a diff for display)
-
-    console.log(`computeReferenceAngles`);
-    console.log(this.posterDate.getTime());
-
 
     const Teph =
       (this.posterDate.getTime() - this.refDate.getTime()) /
