@@ -36,13 +36,14 @@ export class PlanetClockElement extends LitElement {
 
   firstUpdated(changedProperties) {
     console.log(`firstUpdated(changedProperties):  ${changedProperties}`);
-    
-    this.updateUrlFromProps();
+
 
     this.componentContainer = this.shadowRoot.querySelector('#myastro');
     this.sun = this.shadowRoot.querySelector('#sun');
     this.planets = this.shadowRoot.querySelectorAll('.planet');
     this.orbits = this.shadowRoot.querySelectorAll('.orbit');
+
+    // this.updateUrlFromProps();
 
     this.loaded = true;
     this.checkBrowser();
@@ -80,29 +81,28 @@ export class PlanetClockElement extends LitElement {
     // console.log(this.posterDate.getTime());
 
 
+    this.updatePropsFromUrl();
 
 
     // compute elapsed time in centuries, which is what JPL tables use
     const janFirst2000 = new Date(2000, 0, 1, 12, 0, 0);
     this.refDate = new Date(janFirst2000.getTime() - janFirst2000.getTimezoneOffset() * 60 * 1000);
 
-    this.updatePropsFromUrl();
-
     this.constructClock();
 
   }
 
   attributeChangedCallback(attr, oldVal, newVal) {
-    // let newProp = newVal;
-    // console.log('attribute change: ', attr, newProp);
-    // super.attributeChangedCallback(attr, oldVal, newVal);
-    
+    super.attributeChangedCallback(attr, oldVal, newVal);
+
     this.updateUrlFromProps();
     this.updatePlanetMap();
   }
 
   updatePropsFromUrl() {
-    this.color = posterParams.has("color") ? posterParams.get("color") : 'purple';
+    console.log(posterParams.get("color"));
+    
+    this.color = posterParams.has("color") ? posterParams.get("color") : 'pink';
     this.posterDate = posterParams.has("posterDate") ? new Date(isNaN(posterParams.get("posterDate")) ? posterParams.get("posterDate") : new Date()) : new Date();
   }
 

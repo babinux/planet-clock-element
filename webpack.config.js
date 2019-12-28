@@ -80,7 +80,7 @@ module.exports = {
           
           </head>
           <body>
-            <planet-clock-element color="purple" ></planet-clock-element>
+            <planet-clock-element></planet-clock-element>
           </body>
         </html>
       `,
