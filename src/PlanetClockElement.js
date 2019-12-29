@@ -45,6 +45,9 @@ export class PlanetClockElement extends LitElement {
     this.loaded = true;
     this.checkBrowser();
     this.updatePlanetMap();
+
+    this.togglePlanetAnimation();
+
   }
 
 
@@ -96,7 +99,7 @@ export class PlanetClockElement extends LitElement {
     this.updatePlanetMap();
   }
 
-  updatePropsFromUrl() {    
+  updatePropsFromUrl() {
     this.color = posterParams.has("color") ? posterParams.get("color") : 'pink';
     this.posterDate = posterParams.has("posterDate") ? new Date(isNaN(posterParams.get("posterDate")) ? posterParams.get("posterDate") : new Date()) : new Date();
   }
@@ -108,10 +111,12 @@ export class PlanetClockElement extends LitElement {
   }
 
   togglePlanetAnimation() {
-    console.log("Toggling planet animation");
-    this.planets.forEach(planet => {
-      planet.classList.toggle('play');
-    })
+    if (posterParams.has("animated") && posterParams.get("animated") > 0) {
+      console.log("Toggling planet animation");
+      this.planets.forEach(planet => {
+        planet.classList.toggle('play');
+      });
+    }
   }
 
   updatePlanetMap() {
@@ -144,6 +149,7 @@ export class PlanetClockElement extends LitElement {
     return html `
     
     ${styleString}
+
 
     <svg @click="${this.togglePlanetAnimation}" class="myastro-render frag" id="myastro" viewBox="0 0 100 100" baseProfile="full" width="100px" height="100px" xmlns="http://www.w3.org/2000/svg">
 
