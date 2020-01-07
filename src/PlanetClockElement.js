@@ -101,6 +101,8 @@ export class PlanetClockElement extends LitElement {
 
   updatePropsFromUrl() {
     this.color = posterParams.has("color") ? posterParams.get("color") : '#ffc107';
+    console.log(posterParams.get("posterDate"));
+
     this.posterDate = posterParams.has("posterDate") ? new Date(isNaN(posterParams.get("posterDate")) ? posterParams.get("posterDate") : new Date()) : new Date();
   }
 
@@ -203,8 +205,7 @@ export class PlanetClockElement extends LitElement {
     const TephJan =
       (this.TimeSinceFirstJanOfThisYear.getTime() - this.refDate.getTime()) /
       (1000 * 60 * 60 * 24 * 36525);
-    for (let index = 0; index < this.RefAngle.length;
-      (index += 1)) {
+    for (let index = 0; index < this.RefAngle.length; index += 1) {
       // adding pi changes the 0 axis from six-o-clock to noon
       // this seems to be how JPL (and others?) plot their stuff
       if (this.displayOffset) {
@@ -299,7 +300,6 @@ export class PlanetClockElement extends LitElement {
       thisE = nextE;
     }
     while ((sanityCheck += 1) < 100);
-
     // alert("keplerIterate: No convergence");
     console.log("keplerIterate(): No convergence");
     // assume caller checks returned value
@@ -312,18 +312,17 @@ export class PlanetClockElement extends LitElement {
 
   setPlanetsOrbits() {
     const offset = -1;
-    let angle;
+    let angle = [];
     if (!isNaN(this.RefAngle[1])) {
       console.info("not NaN");
       console.info(this.RefAngle[1]);
 
-      for (let index = 0; index < 8;
-        (index += 1)) {
+      for (let index = 0; index < 8; index += 1) {
         // added 180 deg to put 1st of jan at the top
         angle[index] = offset * this.RefAngle[index] * 180 / Math.PI + 180;
       }
     } else {
-      angle = [0, 0, 0, 0, 0, 0, 0, 0];
+
       console.info("is NaN");
       console.info(this.RefAngle[1]);
 
@@ -353,8 +352,7 @@ export class PlanetClockElement extends LitElement {
     this.sun.setAttribute('cx', 50);
     this.sun.setAttribute('cy', 50);
 
-    for (let index = 0; index < 9;
-      (index += 1)) {
+    for (let index = 0; index < 9; index += 1) {
       const planetOrbitSize = ((orbitCoordinates[index] * 1.03 * planetCenterCoordinates) - planetCenterCoordinates);
 
       this.orbits[index].setAttribute('r', planetOrbitSize);
