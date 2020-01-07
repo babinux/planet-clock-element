@@ -3,7 +3,7 @@ import {
   html
 } from 'lit-element';
 
-import customStyle from './style.scss';
+import componentStyle from './style.scss';
 
 const url = new URL(document.location);
 const posterParams = new URLSearchParams(url.search);
@@ -11,7 +11,7 @@ const posterParams = new URLSearchParams(url.search);
 export class PlanetClockElement extends LitElement {
 
   static get styles() {
-    return [customStyle];
+    return [componentStyle];
   }
 
   static get properties() {
@@ -34,7 +34,7 @@ export class PlanetClockElement extends LitElement {
     };
   }
 
-  firstUpdated(changedProperties) {
+  firstUpdated() {
     this.componentContainer = this.shadowRoot.querySelector('#myastro');
     this.sun = this.shadowRoot.querySelector('#sun');
     this.planets = this.shadowRoot.querySelectorAll('.planet');
@@ -100,7 +100,7 @@ export class PlanetClockElement extends LitElement {
   }
 
   updatePropsFromUrl() {
-    this.color = posterParams.has("color") ? posterParams.get("color") : 'pink';
+    this.color = posterParams.has("color") ? posterParams.get("color") : '#ffc107';
     this.posterDate = posterParams.has("posterDate") ? new Date(isNaN(posterParams.get("posterDate")) ? posterParams.get("posterDate") : new Date()) : new Date();
   }
 
@@ -203,7 +203,8 @@ export class PlanetClockElement extends LitElement {
     const TephJan =
       (this.TimeSinceFirstJanOfThisYear.getTime() - this.refDate.getTime()) /
       (1000 * 60 * 60 * 24 * 36525);
-    for (let index = 0; index < this.RefAngle.length; index += 1) {
+    for (let index = 0; index < this.RefAngle.length;
+      (index += 1)) {
       // adding pi changes the 0 axis from six-o-clock to noon
       // this seems to be how JPL (and others?) plot their stuff
       if (this.displayOffset) {
@@ -275,37 +276,57 @@ export class PlanetClockElement extends LitElement {
     return pAngle;
   }
 
-  keplerIterate(M, e) {
-    // solve kepler's equation M = E - e * sin(E)
+
+  keplerIterate(meanAnomaly, eccentricAnomaly) {
+    // solve kepler's equation meanAnomaly = E - eccentricAnomaly * sin(E)
     // using iteration
-    // mean anomaly (M) is assumed in radians
+    // mean anomaly (meanAnomaly) is assumed in radians
     // eccentric anomaly (E) is returned in radians
-    // this may not converge if e is close to 1
-    var err;
-    var tol = 0.0001;
-    var this_E = M;
-    var next_E;
-    var sanityCheck = 0;
-    while (sanityCheck++ < 100) {
-      next_E = M + e * Math.sin(this_E);
-      err = next_E - this_E;
-      if (Math.abs(err) < tol) return next_E;
-      this_E = next_E;
+    // this may not converge if eccentricAnomaly is close to 1
+
+    let err;
+    const tol = 0.0001;
+    let thisE = meanAnomaly;
+    let nextE;
+    let sanityCheck = 0;
+
+    do {
+      nextE = meanAnomaly + eccentricAnomaly * Math.sin(thisE);
+      err = nextE - thisE;
+      if (Math.abs(err) < tol) {
+        return nextE;
+      }
+      thisE = nextE;
     }
-    alert("keplerIterate: No convergence");
+    while ((sanityCheck += 1) < 100);
+
+    // alert("keplerIterate: No convergence");
+    console.log("keplerIterate(): No convergence");
     // assume caller checks returned value
     // (by plugging into keplers equation)
     // so we can just return 0 on fail
+
     return 0;
   }
 
 
   setPlanetsOrbits() {
     const offset = -1;
-    let angle = [];
-    for (let index = 0; index < 8; index++) {
-      // added 180 deg to put 1st of jan at the top
-      angle[index] = offset * this.RefAngle[index] * 180 / Math.PI + 180;
+    let angle;
+    if (!isNaN(this.RefAngle[1])) {
+      console.info("not NaN");
+      console.info(this.RefAngle[1]);
+
+      for (let index = 0; index < 8;
+        (index += 1)) {
+        // added 180 deg to put 1st of jan at the top
+        angle[index] = offset * this.RefAngle[index] * 180 / Math.PI + 180;
+      }
+    } else {
+      angle = [0, 0, 0, 0, 0, 0, 0, 0];
+      console.info("is NaN");
+      console.info(this.RefAngle[1]);
+
     }
     if (typeof this.componentContainer !== 'undefined') {
       this.componentContainer.style.setProperty("--start-mercury", angle[0]);
@@ -324,59 +345,60 @@ export class PlanetClockElement extends LitElement {
     const planetCenterCoordinates = 50;
     const planetSizes = [0.8, 1.6, 2.0, 1.4, 0, 3, 2.5, 1.8, 1.6];
     const orbitCoordinates = [1.04, 1.111, 1.20, 1.29, 1.35, 1.44, 1.57, 1.68, 1.78];
-    const planets = this.planets;
-    const orbits = this.orbits;
-    const sun = this.sun;
+    // const planets = this.planets;
+    // const orbits = this.orbits;
+    // const sun = this.sun;
 
-    sun.setAttribute('r', 1);
-    sun.setAttribute('cx', 50);
-    sun.setAttribute('cy', 50);
+    this.sun.setAttribute('r', 1);
+    this.sun.setAttribute('cx', 50);
+    this.sun.setAttribute('cy', 50);
 
-    for (let index = 0; index < 9; index += 1) {
+    for (let index = 0; index < 9;
+      (index += 1)) {
       const planetOrbitSize = ((orbitCoordinates[index] * 1.03 * planetCenterCoordinates) - planetCenterCoordinates);
 
-      orbits[index].setAttribute('r', planetOrbitSize);
-      orbits[index].setAttribute('cx', planetCenterCoordinates);
-      orbits[index].setAttribute('cy', planetCenterCoordinates);
+      this.orbits[index].setAttribute('r', planetOrbitSize);
+      this.orbits[index].setAttribute('cx', planetCenterCoordinates);
+      this.orbits[index].setAttribute('cy', planetCenterCoordinates);
 
-      planets[index].setAttribute('r', planetSizes[index]);
-      planets[index].setAttribute('cx', (planetCenterCoordinates + planetOrbitSize));
-      planets[index].setAttribute('cy', planetCenterCoordinates);
+      this.planets[index].setAttribute('r', planetSizes[index]);
+      this.planets[index].setAttribute('cx', (planetCenterCoordinates + planetOrbitSize));
+      this.planets[index].setAttribute('cy', planetCenterCoordinates);
 
     }
   }
 
   checkBrowser() {
-    // Opera 8.0+
-    const isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-    // Firefox 1.0+
+    // // Opera 8.0+
+    // const isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+    // // Firefox 1.0+
     const isFirefox = typeof InstallTrigger !== 'undefined';
     if (true || isFirefox) {
       console.log("Browser is FIREFOX switching to 'Layout JS' function ");
       this.setLayout();
     }
     // Safari 3.0+ "[object HTMLElementConstructor]" 
-    const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) {
-      return p.toString() === "[object SafariRemoteNotification]";
-    })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
-    // Internet Explorer 6-11
-    const isIE = /* @cc_on!@ */ false || !!document.documentMode;
-    // Edge 20+
-    const isEdge = !isIE && !!window.StyleMedia;
-    // Chrome 1 - 71
-    const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-    // Blink engine detection
-    const isBlink = (isChrome || isOpera) && !!window.CSS;
-    let BrowerDetect = 'Detecting browsers by ducktyping:<hr>';
-    BrowerDetect += `isFirefox:  ${isFirefox}  <br>`;
-    BrowerDetect += `isChrome:  ${isChrome}  <br>`;
-    BrowerDetect += `isSafari:  ${isSafari}  <br>`;
-    BrowerDetect += `isOpera:  ${isOpera}  <br>`;
-    BrowerDetect += `isIE:  ${isIE}  <br>`;
-    BrowerDetect += `isEdge:  ${isEdge}  <br>`;
-    BrowerDetect += `isBlink:  ${isBlink}  <br>`;
-    // document.body.innerHTML = BrowerDetect;
-    // console.log(BrowerDetect);
+    // const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) {
+    //   return p.toString() === "[object SafariRemoteNotification]";
+    // })(!window.safari || (typeof safari !== 'undefined' && safari.pushNotification));
+    // // Internet Explorer 6-11
+    // const isIE = /* @cc_on!@ */ false || !!document.documentMode;
+    // // Edge 20+
+    // const isEdge = !isIE && !!window.StyleMedia;
+    // // Chrome 1 - 71
+    // const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+    // // Blink engine detection
+    // const isBlink = (isChrome || isOpera) && !!window.CSS;
+    // // let BrowerDetect = 'Detecting browsers by ducktyping:<hr>';
+    // // BrowerDetect += `isFirefox:  ${isFirefox}  <br>`;
+    // // BrowerDetect += `isChrome:  ${isChrome}  <br>`;
+    // // BrowerDetect += `isSafari:  ${isSafari}  <br>`;
+    // // BrowerDetect += `isOpera:  ${isOpera}  <br>`;
+    // // BrowerDetect += `isIE:  ${isIE}  <br>`;
+    // // BrowerDetect += `isEdge:  ${isEdge}  <br>`;
+    // // BrowerDetect += `isBlink:  ${isBlink}  <br>`;
+    // // document.body.innerHTML = BrowerDetect;
+    // // console.log(BrowerDetect);
   }
 
 
@@ -420,18 +442,18 @@ export class PlanetClockElement extends LitElement {
     /*
     var Size = [ 4879/12756, 12104/12756, 12756/12756, 6792/12756, 0.3*142984/12756, 0.3*120536/12756, 0.3*51118/12756, 0.3*49528/12756 ];
     */
-    const erf = 0.2 * 12756;
-    const Size = [
-      4879 / erf, 12104 / erf, 12756 / erf, 6792 / erf, 0.18 * 142984 / erf, 0.2 * 120536 / erf, 0.2 * 51118 / erf, 0.3 * 49528 / erf
-    ];
+    // const erf = 0.2 * 12756;
+    // const Size = [
+    //   4879 / erf, 12104 / erf, 12756 / erf, 6792 / erf, 0.18 * 142984 / erf, 0.2 * 120536 / erf, 0.2 * 51118 / erf, 0.3 * 49528 / erf
+    // ];
     // orbit radius -- need to scale outer planets so it all fits on one plot
     // testing indicated there was no mathematical way that gave good results
     // so we just made up something that looked nice
-    const Orbit = [0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0];
-    //var Orbit = [ 0.4, 0.7, 1.0, 1.5,     3.0, 4.0, 5.0, 6.0 ];
+    // const Orbit = [0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0];
+    // var Orbit = [ 0.4, 0.7, 1.0, 1.5,     3.0, 4.0, 5.0, 6.0 ];
     // orbit periods -- we use these to speed up animation
     // (caluating new positions de novo from JPL data in each frame may be too slow)
-    const Period = [88.0, 224.7, parseInt(this.daysThisYear()), 687.0, 4331.0, 10747.0, 30589.0, 59800.0];
+    // const Period = [88.0, 224.7, parseInt(this.daysThisYear()), 687.0, 4331.0, 10747.0, 30589.0, 59800.0];
     // this.RefAngle[ ] are angle in radians computed from JPL The JPL
     // tables return these wrt First Point of Aries which according
     // to canvas plotting convention would be at the six-o-clock position
