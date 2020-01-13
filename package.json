@@ -50,6 +50,7 @@
     "@open-wc/testing": "^2.0.0",
     "@open-wc/testing-karma": "^3.0.0",
     "@open-wc/testing-karma-bs": "^1.0.0",
+    "compression-webpack-plugin": "^3.1.0",
     "cssnano": "^4.1.10",
     "deepmerge": "^3.2.0",
     "es-dev-server": "^1.32.0",
