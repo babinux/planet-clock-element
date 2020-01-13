@@ -1,112 +1,218 @@
-const path = require('path');
-const WebpackIndexHTMLPlugin = require('@open-wc/webpack-index-html-plugin');
-const {
-  CleanWebpackPlugin
-} = require('clean-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+// eslint-disable-next-line one-var
+const path = require('path'),
+  webpack = require('webpack'),
+  WebpackIndexHTMLPlugin = require('@open-wc/webpack-index-html-plugin'),
+  { CleanWebpackPlugin } = require('clean-webpack-plugin'),
+  TerserPlugin = require('terser-webpack-plugin');
 
-// const {
-//   createDefaultConfig
-// } = require('@open-wc/building-webpack');
+const CompressionPlugin = require('compression-webpack-plugin');
 
-// if you need to support IE11 use "modern-and-legacy-config" instead.
-// const { createCompatibilityConfig } = require('@open-wc/building-webpack');
-// module.exports = createCompatibilityConfig({
-//   input: path.resolve(__dirname, './index.html'),
-// });
+const htmlTemplate = environmentProduction => `
+      <!DOCTYPE html>
+          <html>
+            <head>
+            </head>
+            <body>
+              <planet-clock-element></planet-clock-element>
 
-// module.exports = createDefaultConfig({
-//   input: path.resolve(__dirname, './index.html'),
-// });
+               ${
+                 environmentProduction
+                   ? '<script defer src="vendors~index.js?inProd"></script>'
+                   : '<script defer src="vendors~index.js?inDev"></script>'
+               }
 
-module.exports = {
-  entry: path.resolve(__dirname, './index.js'),
+            </body>
+          </html>
+      `;
 
-  output: {
-    path: path.resolve('./dist'),
-    filename: 'index.js',
-    chunkFilename: '[name].[chunkhash].js',
-  },
-  devServer: {
-    contentBase: './dist',
-  },
-  performance: {
-    hints: 'warning'
-  },
-  // optimization: {
-  //   concatenateModules: true,
-  //   moduleIds: false,
-  //   mangleWasmImports: true,
-  //   removeAvailableModules: true,
-  //   flagIncludedChunks: true,
-  //   chunkIds: false,
-  //   namedModules: true,
-  //   namedChunks: true,
-  //   minimizer: [
-  //     new TerserPlugin({
-  //       cache: true,
-  //       parallel: true,
-  //       sourceMap: true, // Must be set to true if using source-maps in production
-  //       terserOptions: {
-  //         // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
-  //       }
-  //     }),
-  //   ],
-  //   splitChunks: {
-  //     chunks: 'all'
-  //   },
-  // },
-  module: {
-    rules: [{
-        test: /\.css|\.s(c|a)ss$/,
-        use: [{
-          loader: 'lit-scss-loader',
-          options: {
-            minify: false, // defaults to false
-          },
-        }, 'extract-loader', 'css-loader', 'sass-loader'],
-      },
+module.exports = (env, argv) => {
+  let isProd;
 
-      {
-        test: /\.js/,
-        use: {
-          loader: 'babel-loader'
-        }
-      },
-      {
-        test: /\.(png|svg|jpg|gif)$/,
-        use: [
-          'file-loader',
+  console.log(argv.mode);
+  process.env.NODE_ENV = argv.mode;
 
-        ],
+  if (process.env.NODE_ENV === 'production') {
+    console.log('Looks like we are in Production mode!');
+    isProd = true;
+  } else {
+    console.log('Looks like we are in development mode!');
+    process.env.NODE_ENV = 'development';
+    isProd = false;
+  }
 
-      },
-      {
-        test: /\.(woff|woff2|eot|ttf|otf)$/,
-        use: [
-          'file-loader',
-
-        ],
-
-      },
-    ],
-  },
-
-  plugins: [
+  /**
+   * Plugins for production environment
+   */
+  const prodPlugins = [
     new CleanWebpackPlugin(),
-    new WebpackIndexHTMLPlugin({
-      minify: true,
-
-      template: () => `
-        <html>
-          <head>
-          
-          </head>
-          <body>
-            <planet-clock-element></planet-clock-element>
-          </body>
-        </html>
-      `,
+    new CompressionPlugin({
+      filename: '[path].br[query]',
+      algorithm: 'brotliCompress',
+      test: /\.(js|css|html|svg)$/,
+      compressionOptions: {
+        level: 11,
+      },
+      threshold: 10240,
+      minRatio: 0.8,
+      deleteOriginalAssets: false ? isProd : !isProd,
     }),
-  ],
+  ];
+
+  /**
+   * Plugins for dev environment
+   */
+  const devPlugins = [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.DEBUG': JSON.stringify(process.env.DEBUG),
+      __ENV__: JSON.stringify(process.env.NODE_ENV || 'development'),
+    }),
+    new WebpackIndexHTMLPlugin({
+      minify: {
+        removeComments: isProd,
+        collapseWhitespace: isProd,
+        html5: true,
+        minifyCSS: true,
+        minifyJS: true,
+        minifyURLs: false,
+        removeAttributeQuotes: true,
+        removeEmptyAttributes: true,
+        removeOptionalTags: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributese: true,
+        useShortDoctype: true,
+      },
+      template: () => htmlTemplate(isProd),
+    }),
+  ];
+
+  /**
+   * Common Optimization for all environment
+   */
+  const commonOptimizations = {
+    minimize: isProd,
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+          minChunks: 2,
+        },
+      },
+    },
+  };
+
+  /**
+   * Production Optimization for Prod environment
+   */
+  const prodOptimizations = {
+    ...commonOptimizations,
+    minimizer: [
+      new TerserPlugin({
+        extractComments: 'all',
+        cache: !isProd,
+        sourceMap: !isProd,
+        terserOptions: {
+          // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
+        },
+      }),
+    ],
+  };
+
+  /**
+   * Default|Development Optimization for Dev environment
+   */
+  const devOptimizations = {
+    ...commonOptimizations,
+    minimizer: [
+      new TerserPlugin({
+        extractComments: !isProd,
+        cache: !isProd,
+        sourceMap: !isProd,
+        terserOptions: {
+          // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
+        },
+      }),
+    ],
+  };
+
+  /**
+   * Merging plugins and Optimization on the basis of env
+   */
+  const pluginList = isProd ? [...devPlugins, ...prodPlugins] : devPlugins;
+  const optimizationList = isProd ? { ...prodOptimizations } : { ...devOptimizations };
+
+  console.log('Build Mode:');
+  console.log(isProd);
+  console.log('Modules:');
+  console.log(module.exports);
+  console.log('Optimization List:');
+  console.log(optimizationList);
+  console.log(module.exports.optimization);
+
+  return {
+    devtool: isProd ? '' : 'inline-source-map',
+    entry: {
+      index: path.resolve(__dirname, './index.js'),
+      // vendors: path.resolve(__dirname, './dist/vendors.js'),
+    },
+    output: {
+      path: path.resolve(__dirname, './dist'),
+      filename: isProd ? '[name].js' : '[name].js',
+      chunkFilename: '[name].js',
+      publicPath: path.resolve(__dirname, '/'),
+    },
+    devServer: {
+      contentBase: './dist',
+    },
+    performance: {
+      hints: 'warning',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          loader: 'babel-loader',
+          exclude: /node_modules/,
+        },
+        {
+          test: /\.css|\.s(c|a)ss$/,
+          use: [
+            {
+              loader: 'lit-scss-loader',
+              options: {
+                minify: true,
+              },
+            },
+            'extract-loader',
+            'css-loader',
+            'sass-loader',
+          ],
+        },
+
+        {
+          test: /\.(png|jpg|gif|svg)$/,
+          use: ['file-loader'],
+        },
+        {
+          test: /\.(woff|woff2|eot|ttf|otf)$/,
+          use: ['file-loader'],
+        },
+        // {
+        //   test: /\.svg$/,
+        //   use: [
+        //     {
+        //       loader: 'svg-url-loader',
+        //       options: {},
+        //     },
+        //   ],
+        // },
+      ],
+    },
+    plugins: pluginList,
+    optimization: optimizationList,
+  };
 };
