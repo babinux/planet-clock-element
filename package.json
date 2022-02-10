@@ -33,7 +33,7 @@
     "lit-element": "^2.0.1",
     "lit-html": "^1.0.0",
     "lit-scss-loader": "^1.0.0",
-    "node-sass": "^4.13.0",
+    "node-sass": "^7.0.0",
     "postcss-scss": "^2.0.0",
     "rollup-plugin-lit-css": "^2.0.0"
   },
